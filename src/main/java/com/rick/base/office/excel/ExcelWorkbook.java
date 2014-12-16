@@ -18,8 +18,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddress;
- 
+import org.apache.poi.hssf.util.HSSFCellUtil;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 public class ExcelWorkbook {
 	private HSSFWorkbook book = new HSSFWorkbook();
@@ -121,7 +121,6 @@ public class ExcelWorkbook {
 	 */
 	 private void setRegionStyle(HSSFSheet sheet,CellRangeAddress region) {
 		//全部完成之后
-		 
 		HSSFRow frow = HSSFCellUtil.getRow(region.getFirstRow(), sheet);
 		HSSFCell fcell = HSSFCellUtil.getCell(frow, region.getFirstColumn());
 		

@@ -22,7 +22,9 @@ public class ExcelClient {
 		
 		HSSFSheet sheet = ex.createSheet("000");
 		
-		ex.createCell(sheet, new ExcelCell(0,1,"aaaaa").setHeightInPoints(25).setStyle(s1).setWidth(2).setHight(6));
+		ex.createCell(sheet, new ExcelCell(1,1,"aaaaa").setHeightInPoints(25).setStyle(s1).setWidth(2).setHight(6));
+		
+		ex.createCell(sheet, new ExcelCell(5,5,"bbbbb").setHeightInPoints(25).setWidth(6).setHight(2));
 		
  
 		//输出

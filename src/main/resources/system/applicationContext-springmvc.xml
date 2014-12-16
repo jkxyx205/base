@@ -14,7 +14,7 @@
         http://www.springframework.org/schema/util 
         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
 
-	<context:component-scan base-package="com.base" />
+	<context:component-scan base-package="com.rick" />
 	 
     <mvc:annotation-driven>
 <!-- 		 <mvc:message-converters register-defaults="true">   -->
