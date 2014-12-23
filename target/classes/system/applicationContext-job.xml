@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="    
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd    
+        http://www.springframework.org/schema/context     
+        http://www.springframework.org/schema/context/spring-context.xsd    
+        http://www.springframework.org/schema/mvc     
+        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd 
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+        
+    <!-- 创建任务 -->
+	<bean id="jobService" class="com.rick.base.test.quartz.TestJobservice"/> 
+ 
+ 
+    <!-- 定义任务 -->
+    <bean id="vcaEventJobTask" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass">
+            <value>com.rick.base.test.quartz.DetailQuartzJobBean</value>
+        </property> 
+        <property name="jobDataAsMap">
+            <map>
+                <!-- 实际的任务的Bean name，填上EventMonitorService的Bean name -->
+                <entry key="targetObject" value="jobService" />
+                <!-- 执行Bean中的哪个方法 -->
+                <entry key="targetMethod" value="executeTask" />
+            </map>
+        </property>
+        <property name="durability" value="true"></property> 
+    </bean>
+ 
+    <!-- 任务触发器 -->
+    <bean id="eventTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <!-- 任务代理Bean name -->
+            <ref bean="vcaEventJobTask" />
+        </property>
+        <property name="cronExpression">
+            <!-- 配置表达式，这里表示每一分钟执行一次 -->
+            <value>0 0/59 * * * ?</value>
+        </property>
+    </bean>
+    <!-- 任务调度入口 -->
+    <bean autowire="no"
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+      
+        <!-- 任务列表，可以配置多个任务加入到该List -->
+        <property name="triggers">
+            <list>
+               <ref bean="eventTaskTrigger"/>  
+            </list>
+        </property>
+         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+	<!--        以下是集群下的quartz配置文件 -->
+<!-- 	  	<property name="dataSource"> -->
+<!--             <ref bean="dataSource" /> -->
+<!--         </property> -->
+<!--   		<property name="configLocation" value="classpath:system/quartz.properties" /> -->
+<!--         <property name="startupDelay" value="30" /> -->
+<!--         <property name="autoStartup" value="true" /> -->
+<!--         <property name="overwriteExistingJobs" value="true" /> -->
+    </bean>
+</beans>

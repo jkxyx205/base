@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-Hello Jsp!!
+<h1>This is index2 ${pageContext.request.contextPath}</h1>
 </body>
 </html>

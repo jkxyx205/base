@@ -104,6 +104,15 @@ public class ExcelWorkbook {
 		} 
 	}
 	
+	public void createRow(HSSFSheet sheet, ExcelRow row) {
+		String[] header = row.getValues();
+		int len = header.length;
+		for (int i = 0; i <len; i++) {
+			ExcelCell ecell = new ExcelCell(row.getX()+i,row.getY(),header[i]).setHeightInPoints(row.getHeightInPoints()).setStyle(row.getStyle());
+			createCell(sheet, ecell);
+		}
+	}
+	
 	/**
 	 * 设置列的宽度
 	 * @param width
