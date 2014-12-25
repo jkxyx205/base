@@ -12,8 +12,8 @@ import com.rick.base.test.service.TestService;
 import com.rick.base.util.I18nUtil;
 
 @Controller
-public class ControllerTest {
-	private static final transient Logger logger = LoggerFactory.getLogger(ControllerTest.class);  
+public class TestController {
+	private static final transient Logger logger = LoggerFactory.getLogger(TestController.class);  
 	
 	@Resource
 	private TestService service;

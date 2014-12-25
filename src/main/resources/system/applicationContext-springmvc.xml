@@ -13,10 +13,10 @@
         http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd 
         http://www.springframework.org/schema/util 
         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
-	<context:component-scan base-package="com.rick" >
+	<context:component-scan base-package="com.rick" use-default-filters="false">
 		<!-- 	使用的spring注解+springMVC注解，默认情况下spring应该先加载applicationContext.xml，之后再加载springMVC-servlet.xml，
 					可能会造成事务失效 ,在Junit测试事务成功，但是在SpirngMVC测试失败-->
-	 	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>   
+	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>   
 	</context:component-scan>
 	 
     <mvc:annotation-driven>

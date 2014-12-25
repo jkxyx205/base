@@ -16,7 +16,7 @@ import com.rick.base.test.bean.SmScenario;
 
 @Service("tservice")
 //@Transactional
-public class TestService/* implements ITestService */{
+public class TestService /*implements ITestService*/ {
 	@Resource(name = "baseDao")
 	private BaseDaoImpl dao;
 

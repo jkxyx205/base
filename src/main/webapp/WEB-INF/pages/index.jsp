@@ -9,4 +9,9 @@
 <body>
 <h1>This is index2 ${pageContext.request.contextPath}</h1>
 </body>
+<script type="text/javascript" src="resources/js/common/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="resources/js/common/common.js"></script>
+<script type="text/javascript">
+	common.postSubmit("testi18n",{"test":"xx"});
+</script>
 </html>

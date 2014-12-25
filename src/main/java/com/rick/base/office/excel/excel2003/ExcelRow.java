@@ -1,4 +1,4 @@
-package com.rick.base.office.excel;
+package com.rick.base.office.excel.excel2003;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 

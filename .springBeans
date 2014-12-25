@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.6.0.201407080615-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[false]]></enableImports>
+	<configs>
+		<config>src/main/resources/system/temp_applicationContext-job.xml</config>
+	</configs>
+	<autoconfigs>
+		<config>src/main/resources/system/applicationContext-util.xml</config>
+		<config>src/main/resources/business/applicationContext-simulator.xml</config>
+		<config>src/main/resources/system/applicationContext-springmvc.xml</config>
+		<config>src/main/resources/system/applicationContext-i18n.xml</config>
+		<config>src/main/resources/system/applicationContext-hibernate.xml</config>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

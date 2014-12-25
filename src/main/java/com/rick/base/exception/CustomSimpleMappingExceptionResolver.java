@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import com.rick.base.test.ControllerTest;
+import com.rick.base.test.TestController;
 
 public class CustomSimpleMappingExceptionResolver extends
 		SimpleMappingExceptionResolver {
 	
-	private static final transient Logger logger = LoggerFactory.getLogger(ControllerTest.class);
+	private static final transient Logger logger = LoggerFactory.getLogger(TestController.class);
 
 	@Override
 	protected ModelAndView doResolveException(HttpServletRequest request,

@@ -53,6 +53,7 @@ input.error {
 			</tr>
 		</table>
 	</form>
+	<s:message code="version.overflow" />
 	<s:message code="upload" />
 </div>
 
@@ -65,8 +66,7 @@ input.error {
 <script type="text/javascript">
 	$(function() {
 		//get i18n message from js(lang.js)
-		//alert(I18nUtil.getMessageByCode("username"));
-
+		//alert(I18nUtil.getMessageByCode("version.overflow"));
 		
 		//add validator
 		$("#login").validate({

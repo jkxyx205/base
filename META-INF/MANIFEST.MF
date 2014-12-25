@@ -8,7 +8,6 @@ Export-Package: com.base.dao,
  com.rick.base.context,
  com.rick.base.dao,
  com.rick.base.exception,
- com.rick.base.office.excel,
  com.rick.base.test,
  com.rick.base.test.service,
  com.rick.base.util

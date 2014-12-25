@@ -1,6 +1,6 @@
-package com.rick.base.office.excel;
+package com.rick.base.office.excel.excel2007;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
  
 public class ExcelCell {
@@ -14,13 +14,13 @@ public class ExcelCell {
 
 	private float heightInPoints = 12.75f;
 
-	private HSSFCellStyle style;
+	private XSSFCellStyle style;
 	
-	public HSSFCellStyle getStyle() {
+	public XSSFCellStyle getStyle() {
 		return style;
 	}
 
-	public ExcelCell setStyle(HSSFCellStyle style) {
+	public ExcelCell setStyle(XSSFCellStyle style) {
 		this.style = style;
 		return this;
 	}

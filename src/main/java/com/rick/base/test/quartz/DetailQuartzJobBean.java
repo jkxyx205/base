@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.rick.base.test.ControllerTest;
+import com.rick.base.test.TestController;
 
 public class DetailQuartzJobBean extends QuartzJobBean {
-	private static final transient Logger logger = LoggerFactory.getLogger(ControllerTest.class); 
+	private static final transient Logger logger = LoggerFactory.getLogger(TestController.class); 
 	
 	private ApplicationContext applicationContext;  
 	 

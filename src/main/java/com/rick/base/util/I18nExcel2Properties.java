@@ -22,9 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.rick.base.office.excel.ExcelReader;
-import com.rick.base.office.excel.ExcelReader.ExcelResultSet;
-import com.rick.base.office.excel.ExcelReader.ExcelVersion;
+import com.rick.base.office.excel.ExcelResultSet;
+import com.rick.base.office.excel.excel2007.ExcelReader;
 import com.spreada.utils.chinese.ZHConverter;
 
 /**
@@ -92,58 +91,69 @@ public final class I18nExcel2Properties {
 		
 		final List<List<String>> jsList = new ArrayList<List<String>>();
 		
-		ExcelReader.readExcelContent(new FileInputStream(excelTemplate), ExcelVersion.V2007, new ExcelResultSet() {
-			
-			private int zh = 0;
-			
-			public boolean rowMapper(int index, String[] value) throws Exception {
-				if(index == 0) {
-					logger.debug("create i18n properties file..");
+		int sheetNum = ExcelReader.sheetNumbers(new FileInputStream(excelTemplate));
+		for(int i = 0; i < sheetNum; i++) {
+			ExcelReader.readExcelContent(new FileInputStream(excelTemplate), new ExcelResultSet() {
+				
+				private int zh = 0;
+				
+				public boolean rowMapper(int index, String[] value) throws Exception {
 					int len = value.length;
-					for(int i = 1 ; i < len; i++) {
-						String langType = value[i];
-						m.put(i, langType);
-						Map<String,String> t = new HashMap<String,String>(len);
-						i18Map.put(langType, t);
-						
-						if("zh".equals(langType)) {
-							zh = i;
+					
+					if(m.size() == 0) {
+						logger.debug("create i18n properties file..");
+						for(int i = 1 ; i < len; i++) {
+							String langType = value[i];
+							m.put(i, langType);
+							Map<String,String> t = new HashMap<String,String>(len);
+							i18Map.put(langType, t);
 							
-							m.put(len, "hk");
-							Map<String,String> t1 = new HashMap<String,String>(len);
-							i18Map.put("hk", t1);
+							if("zh".equals(langType)) {
+								m.put(len, "hk");
+								Map<String,String> t1 = new HashMap<String,String>(len);
+								i18Map.put("hk", t1);
+							}
 						}
-					}
-				} else {
-					int len = value.length;
-					//check convert
-					if(m.values().contains("zh")) {
-						String[] vv = new String[len+1];
-						System.arraycopy(value, 0, vv, 0, len);
-						vv[len] = SimToTra(value[zh]);
-						value = vv;
-					}
+					} 
 					
-					len = value.length;
-					//prepared data
-					String code = value[0];
-					List<String> row = new ArrayList<String>(len);
-					
-					row.add(value[0]);
-					for(int i = 1 ; i < len; i++) {
-						String langType = m.get(i);
+					if(index == 0) {
+						for(int i = 1 ; i < len; i++) {
+							String langType = value[i];
+							if("zh".equals(langType)) {
+								zh = i;
+								break;
+							}
+						}
+					} else {
+						//check convert
+						if(m.values().contains("zh")) {
+							String[] vv = new String[len+1];
+							System.arraycopy(value, 0, vv, 0, len);
+							vv[len] = SimToTra(value[zh]);
+							value = vv;
+						}
+						
+						len = value.length;
+						//prepared data
+						String code = value[0];
+						List<String> row = new ArrayList<String>(len);
+						
+						row.add(value[0]);
+						for(int i = 1 ; i < len; i++) {
+							String langType = m.get(i);
 
-						Map<String,String> propertyMap = i18Map.get(langType);
-						propertyMap.put(code, value[i]);
-						
-						row.add(value[i]);
-						
+							Map<String,String> propertyMap = i18Map.get(langType);
+							propertyMap.put(code, value[i]);
+							
+							row.add(value[i]);
+							
+						}
+						jsList.add(row);
 					}
-					jsList.add(row);
+					return true;
 				}
-				return true;
-			}
-		}, 0);
+			}, i);
+		}
 		
 		//data to properties file
 		Set<Entry<String,Map<String,String>>> set = i18Map.entrySet();

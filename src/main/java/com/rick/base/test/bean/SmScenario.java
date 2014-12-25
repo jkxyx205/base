@@ -27,4 +27,9 @@ public class SmScenario {
 	public void setStoreCode(String storeCode) {
 		this.storeCode = storeCode;
 	}
+	
+	@Override
+	public String toString() {
+		return "id: " + id + ",storeCode:" + storeCode;
+	}
 }

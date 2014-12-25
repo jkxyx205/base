@@ -1,4 +1,4 @@
-package com.rick.base.office.excel;
+package com.rick.base.office.excel.excel2007;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,32 +12,39 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFCellUtil;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/**
+ * @author Rick.Xu
+ *
+ */
 public class ExcelWorkbook {
-	private HSSFWorkbook book = new HSSFWorkbook();
+	private XSSFWorkbook book = new XSSFWorkbook();
 	
-	private Map<HSSFSheet,Map<Integer,HSSFRow>> sheetList = new LinkedHashMap<HSSFSheet,Map<Integer,HSSFRow>>();
+	public XSSFWorkbook getBook() {
+		return book;
+	}
+
+	private Map<XSSFSheet,Map<Integer,XSSFRow>> sheetList = new LinkedHashMap<XSSFSheet,Map<Integer,XSSFRow>>();
 	
-	private Map<HSSFSheet,List<CellRangeAddress>> border = new LinkedHashMap<HSSFSheet,List<CellRangeAddress>>();
+	private Map<XSSFSheet,List<CellRangeAddress>> border = new LinkedHashMap<XSSFSheet,List<CellRangeAddress>>();
 	
-	public HSSFCellStyle createStyle() {
-		HSSFCellStyle style =  book.createCellStyle();
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+	public XSSFCellStyle createStyle() {
+		XSSFCellStyle style =  book.createCellStyle();
+		style.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+		style.setVerticalAlignment(XSSFCellStyle.VERTICAL_TOP);
 		style.setWrapText(true);
 		return style;
 	}
 	
 	
-	public HSSFFont createFont() {
+	public XSSFFont createFont() {
 		return book.createFont();
 	}
 	
@@ -50,8 +57,8 @@ public class ExcelWorkbook {
 	 * @param name
 	 * @return
 	 */
-	public HSSFSheet createSheet(String name) {
-		HSSFSheet sheet = book.createSheet(name);
+	public XSSFSheet createSheet(String name) {
+		XSSFSheet sheet = book.createSheet(name);
 		return sheet;
 	}
 	
@@ -59,16 +66,16 @@ public class ExcelWorkbook {
 	 * 创建单元格
 	 * @param ecell
 	 */
-	public void createCell(HSSFSheet sheet, ExcelCell ecell) {
+	public void createCell(XSSFSheet sheet, ExcelCell ecell) {
 		CellRangeAddress region = null;
 		
 		region = new CellRangeAddress(ecell.getY(), ecell.getY()+ecell.getHight()-1, ecell.getX(), ecell.getX()+  ecell.getWidth()-1);
 		
 		sheet.addMergedRegion(region);
 		
-		Map<Integer,HSSFRow> rowMap = sheetList.get(sheet);
+		Map<Integer,XSSFRow> rowMap = sheetList.get(sheet);
 		if(rowMap == null) {
-			rowMap = new HashMap<Integer, HSSFRow>();
+			rowMap = new HashMap<Integer, XSSFRow>();
 			sheetList.put(sheet, rowMap);
 			
 			List<CellRangeAddress> list = new ArrayList<CellRangeAddress>();
@@ -76,7 +83,7 @@ public class ExcelWorkbook {
 		}
 		
 		
-		HSSFRow row = rowMap.get(ecell.getY());
+		XSSFRow row = rowMap.get(ecell.getY());
 		if(row == null) {
 			row = sheet.createRow(ecell.getY());
 			rowMap.put(ecell.getY(), row);
@@ -87,11 +94,11 @@ public class ExcelWorkbook {
 		}
 		
 		
-		HSSFCell cell = row.createCell(ecell.getX());
+		XSSFCell cell = row.createCell(ecell.getX());
 		
 		cell.setCellValue(ecell.getValue());
 		
-		HSSFCellStyle style = null;
+		XSSFCellStyle style = null;
 		if(ecell.getStyle() != null) {
 			style = ecell.getStyle();
 			cell.setCellStyle(style);
@@ -104,7 +111,7 @@ public class ExcelWorkbook {
 		} 
 	}
 	
-	public void createRow(HSSFSheet sheet, ExcelRow row) {
+	public void createRow(XSSFSheet sheet, ExcelRow row) {
 		String[] header = row.getValues();
 		int len = header.length;
 		for (int i = 0; i <len; i++) {
@@ -117,7 +124,7 @@ public class ExcelWorkbook {
 	 * 设置列的宽度
 	 * @param width
 	 */
-	public void setColumnWidth(HSSFSheet sheet,int[] width) {
+	public void setColumnWidth(XSSFSheet sheet,int[] width) {
 		for(int i = 0 ; i < width.length; i++) {
 			sheet.setColumnWidth(i, width[i]);
 		}
@@ -128,16 +135,16 @@ public class ExcelWorkbook {
 	 * 设置边框
 	 * @param region
 	 */
-	 private void setRegionStyle(HSSFSheet sheet,CellRangeAddress region) {
+	 private void setRegionStyle(XSSFSheet sheet,CellRangeAddress region) {
 		//全部完成之后
-		HSSFRow frow = HSSFCellUtil.getRow(region.getFirstRow(), sheet);
-		HSSFCell fcell = HSSFCellUtil.getCell(frow, region.getFirstColumn());
+		XSSFRow frow = XSSFCellUtil.getRow(region.getFirstRow(), sheet);
+		XSSFCell fcell = XSSFCellUtil.getCell(frow, region.getFirstColumn());
 		
-		HSSFCellStyle style = fcell.getCellStyle();
+		XSSFCellStyle style = fcell.getCellStyle();
 		for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
-			HSSFRow row = HSSFCellUtil.getRow(i, sheet);
+			XSSFRow row = XSSFCellUtil.getRow(i, sheet);
 			for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
-				HSSFCell cell = HSSFCellUtil.getCell(row, j);
+				XSSFCell cell = XSSFCellUtil.getCell(row, j);
 				cell.setCellStyle(style);
 			}
 		}
@@ -149,12 +156,12 @@ public class ExcelWorkbook {
 	}
 	
 	public void write(OutputStream os) throws Exception {
-		Set<Entry<HSSFSheet, List<CellRangeAddress>>> set = border.entrySet();
-		Iterator<Entry<HSSFSheet, List<CellRangeAddress>>> it = set.iterator();
+		Set<Entry<XSSFSheet, List<CellRangeAddress>>> set = border.entrySet();
+		Iterator<Entry<XSSFSheet, List<CellRangeAddress>>> it = set.iterator();
 		while(it.hasNext()) {
-			Entry<HSSFSheet, List<CellRangeAddress>> en = it.next();
+			Entry<XSSFSheet, List<CellRangeAddress>> en = it.next();
 			
-			HSSFSheet sheet = en.getKey();
+			XSSFSheet sheet = en.getKey();
 			List<CellRangeAddress> list = en.getValue();
 			
 			for(CellRangeAddress cr :list) {
