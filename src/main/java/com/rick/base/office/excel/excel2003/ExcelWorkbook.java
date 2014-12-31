@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -21,6 +22,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFCellUtil;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import com.rick.base.office.excel.excel2003.ExcelCell.ExcelCellBuilder;
+import com.rick.base.office.excel.excel2003.ExcelRow.ExcelRowBuilder;
+
 /**
  * @author Rick.Xu
  *
@@ -28,14 +32,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
 public class ExcelWorkbook {
 	private HSSFWorkbook book = new HSSFWorkbook();
 	
-	public HSSFWorkbook getBook() {
-		return book;
-	}
-
+	private CellThemes theme = new CellThemes(book);
+	
 	private Map<HSSFSheet,Map<Integer,HSSFRow>> sheetList = new LinkedHashMap<HSSFSheet,Map<Integer,HSSFRow>>();
 	
 	private Map<HSSFSheet,List<CellRangeAddress>> border = new LinkedHashMap<HSSFSheet,List<CellRangeAddress>>();
 	
+	private List<HSSFSheet> sheets = new ArrayList<HSSFSheet>();
+	
+	public List<HSSFSheet> getSheets() {
+		return Collections.unmodifiableList(sheets);
+	}
+	
+	public CellThemes getTheme() {
+		return theme;
+	}
 	public HSSFCellStyle createStyle() {
 		HSSFCellStyle style =  book.createCellStyle();
 		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -60,6 +71,7 @@ public class ExcelWorkbook {
 	 */
 	public HSSFSheet createSheet(String name) {
 		HSSFSheet sheet = book.createSheet(name);
+		sheets.add(sheet);
 		return sheet;
 	}
 	
@@ -67,10 +79,11 @@ public class ExcelWorkbook {
 	 * 创建单元格
 	 * @param ecell
 	 */
-	public void createCell(HSSFSheet sheet, ExcelCell ecell) {
+	public void createCell(HSSFSheet sheet, ExcelCellBuilder builder) {
+		ExcelCell ecell = builder.build();
 		CellRangeAddress region = null;
 		
-		region = new CellRangeAddress(ecell.getY(), ecell.getY()+ecell.getHight()-1, ecell.getX(), ecell.getX()+  ecell.getWidth()-1);
+		region = new CellRangeAddress(ecell.getY(), ecell.getY()+ecell.getHeight()-1, ecell.getX(), ecell.getX()+  ecell.getWidth()-1);
 		
 		sheet.addMergedRegion(region);
 		
@@ -112,12 +125,12 @@ public class ExcelWorkbook {
 		} 
 	}
 	
-	public void createRow(HSSFSheet sheet, ExcelRow row) {
+	public void createRow(HSSFSheet sheet, ExcelRowBuilder builder) {
+		ExcelRow row = builder.build();
 		String[] header = row.getValues();
 		int len = header.length;
 		for (int i = 0; i <len; i++) {
-			ExcelCell ecell = new ExcelCell(row.getX()+i,row.getY(),header[i]).setHeightInPoints(row.getHeightInPoints()).setStyle(row.getStyle());
-			createCell(sheet, ecell);
+			createCell(sheet, new ExcelCellBuilder(row.getX()+i, row.getY(), header[i]).heightInPoints(row.getHeightInPoints()).style(row.getStyle()));
 		}
 	}
 	

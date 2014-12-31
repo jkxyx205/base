@@ -19,15 +19,15 @@ import org.slf4j.LoggerFactory;
  * @author Rick.Xu
  *
  */
-class SqlFormatter {
+public class SqlFormatter {
 	
 	private static final transient Logger logger = LoggerFactory.getLogger(SqlFormatter.class);
 	
-	private static final String PARAM_REGEX = "(?i)\\s*(=|<|>|like|!=|>=|<=|in)\\s*[(]?:\\w+[)]?";
-	   
-	private static final String PARAM_REPLACE = "(((?i)[a-zA-Z0-9[\\.]_[-]]+)|([(][^([(]|[)])]*[)]))\\s*(?i)(=|<|>|like|!=|>=|<=)\\s*:";
-	
-	private static final String IN_PARAM_REPLACE = "(((?i)[a-zA-Z0-9[\\.]_[-]]+)|([(][^([(]|[)])]*[)]))\\s*(?i)(in)\\s*[(]\\s*:";
+	private static final String COLUNM_REGEX = "[a-zA-Z0-9[\\.]_[-]]+";
+	private static final String OPER_REGEX = "(?i)(=|<|>|like|!=|>=|<=|\\s+in|\\s+not\\s+in)";
+	private static final String HOLDER_REGEX = "[(\\s*]?:\\w+[\\s*)]?";
+	private static final String PARAM_REGEX = ":\\w+";
+	private static final String FULL_REGIX = new StringBuilder().append(COLUNM_REGEX).append("\\s*").append(OPER_REGEX).append("\\s*").append(HOLDER_REGEX).toString();
 	
 	private static final Map<String,String> DATE_FORMAT_MAP;
 	
@@ -42,24 +42,40 @@ class SqlFormatter {
 		if(formatMap == null || param == null) {
 			formatMap = Collections.EMPTY_MAP; 
 		} else {
-			Set<Entry<String,Object>> set = param.entrySet();
+			Map<String,ParamHolder> paramMap = splitParam(srcSql);
 			
-			for(Entry<String,Object> en : set) {
+			Set<Entry<String,ParamHolder>> set = paramMap.entrySet();
+			
+			for(Entry<String,ParamHolder> en : set) {
 				String name = en.getKey();
-				Object obj = en.getValue();
+				ParamHolder h = en.getValue();
 				
-				String value = "";
+				Object obj = param.get(name);
+				
+				obj = (obj == null ? "":obj);
+				String value = null;
 				
 				if(obj.getClass() == String[].class) {
 					String[] values = (String[])obj;
 					if(values.length > 0) {
-						value = values[0];
+						StringBuilder sb = new StringBuilder();
+						for(String s : values) {
+							sb.append(s).append(";");
+						}
+						value = sb.toString();
 					}
 				} else {
 					value = String.valueOf(obj);
 				}
-	
-				if(StringUtils.isNotBlank(value) && srcSql.matches(new StringBuilder().append(".*").append(IN_PARAM_REPLACE).append(name).append("\\s*[)]").append(".*").toString())) {
+				
+				if(StringUtils.isBlank(value)) {
+					srcSql = srcSql.replace(h.full, "1 = 1");
+					continue;
+				}
+				
+				//if has the value
+				String format;
+				if(h.oper.toUpperCase().endsWith("IN")) {
 					String[] invalues = null;
 					if ((invalues = value.split(paramInSeperator)).length > 0) {
 						StringBuilder sb = new StringBuilder("in (");
@@ -71,52 +87,28 @@ class SqlFormatter {
 						sb.deleteCharAt(sb.length()-1);
 						sb.append(")");
 						sb.toString();
-						srcSql = srcSql.replaceAll("((?i)in)\\s*[(]\\s*:" + name + "\\s*[)]", sb.toString());
+						srcSql = srcSql.replaceAll("((?i)in)\\s*[(]\\s*:" + h.holder + "\\s*[)]", sb.toString());
 					}
-				}
-				formatMap.put(name, value);
-			}
-		}
-		Pattern pat = Pattern.compile(PARAM_REGEX);  
-		Matcher mat = pat.matcher(srcSql);  
-		while (mat.find()) {
-			 String matchRet = mat.group().trim();
-			 
-			 int end = matchRet.indexOf(")");
-			 end = (end == -1 ? matchRet.length() : end);
-			 
-	         String placeHolder =  matchRet.substring(matchRet.indexOf(":")+1,end);
-	         
-	        String value = (String)formatMap.get(placeHolder);
-			if (StringUtils.isNotBlank(value)){
-				String oper = matchRet.split("\\s*:")[0];
-				
-				String format;
-				
-				if("like".equalsIgnoreCase(oper)) {
-				 	 value = new StringBuilder("%").append(value).append("%").toString();
-		        	 formatMap.put(placeHolder, value);
-		        	 
-		        	 
-				} else if(("<>=<=".indexOf(oper) > -1|| matchRet.equals("!=")) && StringUtils.isNotBlank(format = matchDate(value))) {
+					
+				} else if("like".equalsIgnoreCase(h.oper)) {
+		        	 srcSql = srcSql.replace(h.full, new StringBuilder("UPPER(").append(h.key).append(") ").append(h.oper).append(" '%'||UPPER(:").append(name).append(")||'%'"));
+		        	 formatMap.put(name, value);
+				} else if(("<>=<=".indexOf(h.oper) > -1|| h.oper.equals("!=")) && StringUtils.isNotBlank(format = matchDate(value))) {
 					try {
-						formatMap.put(placeHolder, new SimpleDateFormat(format).parse(value));
+						formatMap.put(name, new SimpleDateFormat(format).parse(value));
 					} catch (ParseException e) {
 						 logger.debug(e.getMessage());
 					}
+				} else {
+					formatMap.put(name, value);
 				}
-	       
-	         }
-	         
-	      if(StringUtils.isBlank(value)) {
-	    	  srcSql = srcSql.replaceAll(PARAM_REPLACE + placeHolder, "1 = 1").replaceAll(IN_PARAM_REPLACE +placeHolder +"\\s*[)]" , "1 = 1");
-	      }
+				
+			}
 		}
-		
 		return srcSql;
 	}
 	
-	static String formatSqlCount(String srcSql) {
+	public static String formatSqlCount(String srcSql) {
 		srcSql = srcSql.replaceAll("(?i)order\\s+by\\s+(\\S+)\\s+(desc|asc)?","");
 		StringBuilder sb = new  StringBuilder();
 		sb.append("SELECT COUNT(*) FROM (").append(srcSql).append(")");
@@ -131,5 +123,61 @@ class SqlFormatter {
 				return DATE_FORMAT_MAP.get(f);
 		}
 		return null;
+	}
+	
+	public static Map<String,ParamHolder> splitParam(String sql) {
+		Pattern pat = Pattern.compile(FULL_REGIX);  
+		Matcher mat = pat.matcher(sql);  
+		Map<String,ParamHolder> paramMap = new HashMap<String, ParamHolder>();
+		
+		
+		while (mat.find()) {
+			 ParamHolder holder = new ParamHolder();
+			 String matchRet = mat.group().trim();
+			 holder.full = matchRet;
+			 //再进行拆分
+			 Pattern pat1 = Pattern.compile("^" + COLUNM_REGEX);  
+			 Matcher mat1 = pat1.matcher(matchRet);
+			 while(mat1.find()) {
+				 String matchRet1 = mat1.group().trim();
+				 holder.key = matchRet1;
+			 }
+			 
+			 //再进行拆分
+			 Pattern pat2 = Pattern.compile(OPER_REGEX);  
+			 Matcher mat2 = pat2.matcher(matchRet);
+			 while(mat2.find()) {
+				 String matchRet2 = mat2.group().trim();
+				 holder.oper = matchRet2;
+			 }
+			 
+			 
+			//再进行拆分
+			 Pattern pat3 = Pattern.compile(PARAM_REGEX);  
+			 Matcher mat3 = pat3.matcher(matchRet);
+			 while(mat3.find()) {
+				 String matchRet3 = mat3.group().trim();
+				 holder.holder = matchRet3.substring(1);
+			 }
+			 
+			 paramMap.put(holder.holder, holder);
+		}
+		logger.debug(paramMap.toString());
+		return paramMap;
+	}
+	
+   private static class ParamHolder {
+		private String full;
+		
+		private String key;
+		
+		private String oper;
+		
+		private String holder;
+		
+		@Override
+		public String toString() {
+			return new StringBuilder().append(full).append("/").append(key).append("/").append(oper).append("/").append(holder).toString();
+		}
 	}
 }

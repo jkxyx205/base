@@ -2,6 +2,7 @@ package com.rick.base.test;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,8 @@ public class TestController {
 		logger.debug("add1 & add1 execute...");
 		System.out.println(I18nUtil.getMessageByCode("username",new Object[] {"/hello"}));
 		
-		service.add1();
+		service.query();
+		
 		//throw new BusinessException();
 		return "index";
 	}
@@ -32,4 +34,28 @@ public class TestController {
 	public String gotoi18n() {
 		return "test/i18n";
 	}
+	
+	@RequestMapping(value="/testJqgrid")
+	public String gotoJqgird() {
+		return "test/jqgird";
+	}
+	
+	@RequestMapping(value="/bootstrap")
+	public String gotoBootstrap() {
+		return "test/bootstrap";
+	}
+	
+	@RequestMapping(value="/login")
+	public String gotoLogin() {
+		return "login";
+	}
+	
+	@RequestMapping(value="/register")
+	public String gotoRegister() {
+		return "test/register";
+	}
+	
+	
+	
+	
 }

@@ -21,7 +21,7 @@
     ]]>
 	</sql-query>
 	
-	 <sql-query name="querySmscenario4">
+	<sql-query name="querySmscenario4">
  	<![CDATA[
  		 SELECT T.ID, T.STORE_CODE,T.BU_CODE FROM SM_SCENARIO T WHERE T.ID = :ID AND T.STORE_CODE  IN ( :STORE_CODE ) AND T.CREATED_DT < :CREATE_DATE
     ]]>
@@ -29,9 +29,8 @@
 	
 	<sql-query name="testReport">
 	<![CDATA[
-		SELECT T.* FROM MD_STORE_BASIC_INFO T
-		  ]]>
+		SELECT T.* FROM MD_STORE_BASIC_INFO T WHERE T.STORE_CODE = :STORE_CODE AND T.STORE_NAME LIKE :STORE_NAME AND T.OPENING_DATE < :OPENING_DATE
+		AND T.STATUS in (:STATUS) AND T.REGION = :REGION
+    ]]>
 	</sql-query>
-	
-	
 </hibernate-mapping>

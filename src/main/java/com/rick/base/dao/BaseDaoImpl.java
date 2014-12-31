@@ -110,7 +110,7 @@ public class BaseDaoImpl {
 	}
 
 	public long queryForSpecificParamCount(String queryName,
-			Map<String, Object> param, String paramInSeperator) {
+			Map<String, Object> param, String paramInSeperator,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
 		String sql = getNamedQueryString(queryName);
 		Map<String, Object> formatMap = new HashMap<String, Object>();
 		String formatSql = SqlFormatter.formatSql(sql, param, formatMap,
@@ -123,8 +123,8 @@ public class BaseDaoImpl {
 	}
 
 	public long queryForSpecificParamCount(String queryName,
-			Map<String, Object> param) {
-		return queryForSpecificParamCount(queryName, param, PARAM_IN_SEPERATOR);
+			Map<String, Object> param,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
+		return queryForSpecificParamCount(queryName, param, PARAM_IN_SEPERATOR,jdbcTemplateExecutor);
 	}
 
 	public interface JdbcTemplateExecutor<T> {

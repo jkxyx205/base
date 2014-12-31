@@ -2,51 +2,30 @@ package com.rick.base.office.excel.excel2003;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 
+import com.rick.base.office.excel.Builder;
+
  
 public class ExcelRow {
-	private int x;
+	final private int x;
 
-	private int y;
+	final private int y;
 
-	private float heightInPoints = 12.75f;
+	final private float heightInPoints;
 
-	private HSSFCellStyle style;
+	final private HSSFCellStyle style;
 	
-	private String[] values;
+	final private String[] values;
 	
 	public String[] getValues() {
 		return values;
-	}
-
-	public ExcelRow setValues(String[] values) {
-		this.values = values;
-		return this;
 	}
 
 	public HSSFCellStyle getStyle() {
 		return style;
 	}
 
-	public ExcelRow setStyle(HSSFCellStyle style) {
-		this.style = style;
-		return this;
-	}
-
 	public float getHeightInPoints() {
 		return heightInPoints;
-	}
-
-	public ExcelRow setHeightInPoints(float heightInPoints) {
-		this.heightInPoints = heightInPoints;
-		return this;
-	}
-
-
-	public ExcelRow(int x, int y, String[] values) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.values = values;
 	}
 
 
@@ -54,18 +33,56 @@ public class ExcelRow {
 		return x;
 	}
 
-	public ExcelRow setX(int x) {
-		this.x = x;
-		return this;
-	}
-
 	public int getY() {
 		return y;
 	}
+	
+	public static class ExcelRowBuilder implements Builder<ExcelRow> {
 
-	public ExcelRow setY(int y) {
-		this.y = y;
-		return this;
+		private int x;
+
+		private int y;
+
+		private float heightInPoints = 12.75f;
+
+		private HSSFCellStyle style;
+		
+		private String[] values;
+		
+		public ExcelRowBuilder(int x, int y, String[] values) {
+			this.x = x;
+			this.y = y;
+			this.values = values;
+		}
+		
+		public ExcelRowBuilder heightInPoints(float heightInPoints) {
+			this.heightInPoints = heightInPoints;
+			return this;
+		}
+		
+		public ExcelRowBuilder style(HSSFCellStyle style) {
+			this.style = style;
+			return this;
+		}
+		
+		public ExcelRowBuilder values(String[] values) {
+			this.values = values;
+			return this;
+		}
+		
+		
+		public ExcelRow build() {
+			return new ExcelRow(this);
+		}
+		
+	}
+	
+	private ExcelRow(ExcelRowBuilder builder) {
+		this.x = builder.x;
+		this.y = builder.y;
+		this.heightInPoints = builder.heightInPoints;
+		this.values = builder.values;
+		this.style = builder.style;
 	}
 
 }

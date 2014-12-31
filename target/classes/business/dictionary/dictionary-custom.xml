@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dictionary-config>
+	<!--自定义字典，没有形成数据库字典-->
+	<custom>
+		<key>STORE_STATUS</key>
+		<description>XXXX</description>
+		<!-- 自定义的映射 -->
+		<map>
+	      	<entry key="ACTIVE">ACTIVE</entry>
+	      	<entry key="CLOSED">CLOSED</entry>
+        </map>
+		<column-pattern>flag</column-pattern>
+	</custom>
+</dictionary-config>

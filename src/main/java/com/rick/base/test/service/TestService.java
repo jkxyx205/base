@@ -3,6 +3,8 @@ package com.rick.base.test.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -12,6 +14,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Service;
 
 import com.rick.base.dao.BaseDaoImpl;
+import com.rick.base.dictionary.DictionaryUtils;
 import com.rick.base.test.bean.SmScenario;
 
 @Service("tservice")
@@ -19,6 +22,19 @@ import com.rick.base.test.bean.SmScenario;
 public class TestService /*implements ITestService*/ {
 	@Resource(name = "baseDao")
 	private BaseDaoImpl dao;
+	
+	public void query() throws Exception {
+		SmScenario s = new SmScenario();
+		s.setFlag("1");
+		s.setStatus("0");
+		
+		DictionaryUtils.convertAnyThing(s);
+		System.out.println(s);
+		Map<String,String> map = DictionaryUtils.getItemByKeyorAlias("xb");
+		
+		System.out.println(map);
+		
+	}
 
 	public void add1() throws Exception {
 		Session session = dao.getSession();

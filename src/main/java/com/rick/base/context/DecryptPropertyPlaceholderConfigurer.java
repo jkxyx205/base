@@ -2,7 +2,7 @@ package com.rick.base.context;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
-import com.rick.base.util.DESUtils;
+import com.rick.base.util.DESUtil;
 
 public class DecryptPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer{  
     /** 
@@ -11,7 +11,7 @@ public class DecryptPropertyPlaceholderConfigurer extends PropertyPlaceholderCon
     @Override  
     protected String convertProperty(String propertyName,String propertyValue){  
         if(isEncryptPropertyVal(propertyName)){  
-            return DESUtils.getDecryptString(propertyValue);//调用解密方法  
+            return DESUtil.getDecryptString(propertyValue);//调用解密方法  
         }else{  
             return propertyValue;  
         }  

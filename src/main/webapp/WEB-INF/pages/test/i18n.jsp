@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>i18n Test</title>
 <style type="text/css">
 /*validate css*/
 table.tb_validate td {
@@ -58,7 +58,7 @@ input.error {
 </div>
 
 </body>
-<script type="text/javascript" src="resources/js/common/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="resources/js/common/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="resources/js/common/jquery.cookie.js"></script>
 <script type="text/javascript" src="resources/js/common/jquery.form.js"></script>
 <script type="text/javascript" src="resources/js/common/jquery.validate.js"></script>

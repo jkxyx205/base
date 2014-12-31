@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -20,6 +21,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.rick.base.office.excel.Builder;
+import com.rick.base.office.excel.excel2007.ExcelCell.ExcelCellBuilder;
+
 /**
  * @author Rick.Xu
  *
@@ -27,13 +31,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelWorkbook {
 	private XSSFWorkbook book = new XSSFWorkbook();
 	
-	public XSSFWorkbook getBook() {
-		return book;
-	}
+	private CellThemes theme = new CellThemes(book);
 
 	private Map<XSSFSheet,Map<Integer,XSSFRow>> sheetList = new LinkedHashMap<XSSFSheet,Map<Integer,XSSFRow>>();
 	
 	private Map<XSSFSheet,List<CellRangeAddress>> border = new LinkedHashMap<XSSFSheet,List<CellRangeAddress>>();
+	
+	private List<XSSFSheet> sheets = new ArrayList<XSSFSheet>();
+	
+	public List<XSSFSheet> getSheets() {
+		return Collections.unmodifiableList(sheets);
+	}
 	
 	public XSSFCellStyle createStyle() {
 		XSSFCellStyle style =  book.createCellStyle();
@@ -48,6 +56,11 @@ public class ExcelWorkbook {
 		return book.createFont();
 	}
 	
+
+	public CellThemes getTheme() {
+		return theme;
+	}
+
 	public ExcelWorkbook() {
 		
 	}
@@ -59,6 +72,7 @@ public class ExcelWorkbook {
 	 */
 	public XSSFSheet createSheet(String name) {
 		XSSFSheet sheet = book.createSheet(name);
+		sheets.add(sheet);
 		return sheet;
 	}
 	
@@ -66,10 +80,11 @@ public class ExcelWorkbook {
 	 * 创建单元格
 	 * @param ecell
 	 */
-	public void createCell(XSSFSheet sheet, ExcelCell ecell) {
+	public void createCell(XSSFSheet sheet, Builder<ExcelCell> builder) {
+		ExcelCell ecell = builder.build();
 		CellRangeAddress region = null;
 		
-		region = new CellRangeAddress(ecell.getY(), ecell.getY()+ecell.getHight()-1, ecell.getX(), ecell.getX()+  ecell.getWidth()-1);
+		region = new CellRangeAddress(ecell.getY(), ecell.getY()+ecell.getHeight()-1, ecell.getX(), ecell.getX()+  ecell.getWidth()-1);
 		
 		sheet.addMergedRegion(region);
 		
@@ -111,12 +126,12 @@ public class ExcelWorkbook {
 		} 
 	}
 	
-	public void createRow(XSSFSheet sheet, ExcelRow row) {
+	public void createRow(XSSFSheet sheet, Builder<ExcelRow> builder) {
+		ExcelRow row = builder.build();
 		String[] header = row.getValues();
 		int len = header.length;
 		for (int i = 0; i <len; i++) {
-			ExcelCell ecell = new ExcelCell(row.getX()+i,row.getY(),header[i]).setHeightInPoints(row.getHeightInPoints()).setStyle(row.getStyle());
-			createCell(sheet, ecell);
+			createCell(sheet, new ExcelCellBuilder(row.getX()+i, row.getY(), header[i]).heightInPoints(row.getHeightInPoints()).style(row.getStyle()));
 		}
 	}
 	

@@ -146,11 +146,11 @@ public class DaoTest extends AbstractJUnit4SpringContextTests {
 	
 	@Test
 	public void testQueryCount2() {
-		Map<String,Object> param = new HashMap<String,Object>();
+		//Map<String,Object> param = new HashMap<String,Object>();
 		//param.put("ID", "1419328510900");
 		//param.put("STORE_CODE", "22222;");
-		long count = dao.queryForSpecificParamCount("querySmscenario4", param);
-		System.out.println(count);
+		//long count = dao.queryForSpecificParamCount("querySmscenario4", param);
+		//System.out.println(count);
 	}
 	
 
