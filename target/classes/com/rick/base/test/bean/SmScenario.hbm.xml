@@ -33,4 +33,6 @@
 		AND T.STATUS in (:STATUS) AND T.REGION = :REGION
     ]]>
 	</sql-query>
+	
+	
 </hibernate-mapping>

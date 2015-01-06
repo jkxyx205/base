@@ -10,7 +10,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>
-    <sitemesh:write property='title' />
+        <sitemesh:write property="title" /> 
 </title>
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link rel="stylesheet" href="resources/plugin/bootstrap/css/bootstrap.min.css">
@@ -31,11 +31,17 @@
 
 <link rel="stylesheet" href="resources/css/common/bootstrap_custom.css" media="screen">
 
+<!-- <link href="http://www.gbtags.com/gb/networks/uploads/245f40e7-2d25-4346-ac05-88d96b032fc7/css/bootstrap.min.css" rel="stylesheet"> -->
+<!-- <link href="http://www.gbtags.com/gb/networks/uploads/245f40e7-2d25-4346-ac05-88d96b032fc7/css/font-awesome.css" rel="stylesheet"> -->
+<!-- <link href="http://www.gbtags.com/gb/networks/uploads/245f40e7-2d25-4346-ac05-88d96b032fc7/css/custom.css" rel="stylesheet"> -->
+
 </head>
 <body>
 <script type="text/javascript" src="resources/js/common/jquery-1.11.0.min.js"></script>
+
 <div class="container" id="w_container">
 	<div class="page-header">
+        
 		  <div class="row">
 		  <div class="col-md-4 col-md-offset-8">
 		  	<table>
@@ -46,6 +52,8 @@
 			</table>
 		  </div>
 		</div>
+		
+		
 		<hr/>
 		<sitemesh:write property='body' />
     </div>

@@ -53,7 +53,7 @@
 			<div style="float: right; margin: 5px;">
 				<button name="search" type="button" class="btn btn-primary"><s:message code="submit"/></button>
 				<button name="reset"  type="button" class="btn btn-primary"><s:message code="reset"/></button>
-				<button name="export" type="button" class="btn btn-primary"><s:message code="export"/></button>
+				<button authId = "store.export" name="export" type="button" class="btn btn-primary"><s:message code="export"/></button>
 			</div>
 		</div>
 	</form>

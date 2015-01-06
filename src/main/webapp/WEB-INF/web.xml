@@ -25,7 +25,18 @@
 	<listener>
 	    <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
 	</listener>
-
+<filter>
+	<filter-name>auth</filter-name>
+	<filter-class>com.rick.base.context.filter.auth.AuthFilter</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>auth</filter-name>
+	<url-pattern>*.jsp</url-pattern>
+	<dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+</filter-mapping>
 <filter>
              <filter-name>encodingFilter</filter-name>
              <filter-class>
@@ -44,6 +55,10 @@
 <filter>
         <filter-name>sitemesh</filter-name>
         <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+        <init-param>
+		 	<param-name>configFile</param-name>
+  			<param-value>/WEB-INF/classes/system/sitemesh3.xml</param-value>
+		</init-param>
 </filter>
 <filter-mapping>
         <filter-name>sitemesh</filter-name>
@@ -51,9 +66,6 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
 </filter-mapping>
-
-
-
 	<!--springMVC 框架加载服务 -->
 	<servlet>
 		<servlet-name>springMVC</servlet-name>

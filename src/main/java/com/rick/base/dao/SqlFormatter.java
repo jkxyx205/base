@@ -2,10 +2,11 @@ package com.rick.base.dao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +24,11 @@ public class SqlFormatter {
 	
 	private static final transient Logger logger = LoggerFactory.getLogger(SqlFormatter.class);
 	
-	private static final String COLUNM_REGEX = "[a-zA-Z0-9[\\.]_[-]]+";
-	private static final String OPER_REGEX = "(?i)(=|<|>|like|!=|>=|<=|\\s+in|\\s+not\\s+in)";
+//	private static final String COLUNM_REGEX = "[a-zA-Z0-9[\\.]_[-]]+";
+	//add column function
+	private static final String COLUNM_REGEX = "((?i)(to_char|NVL)?\\s*([(][^([(]|[)])]*[)])|[a-zA-Z0-9[\\.]_[-]]+)";
+	
+	private static final String OPER_REGEX = "(?i)(like|!=|>=|<=|<|>|=|\\s+in|\\s+not\\s+in)";
 	private static final String HOLDER_REGEX = "[(\\s*]?:\\w+[\\s*)]?";
 	private static final String PARAM_REGEX = ":\\w+";
 	private static final String FULL_REGIX = new StringBuilder().append(COLUNM_REGEX).append("\\s*").append(OPER_REGEX).append("\\s*").append(HOLDER_REGEX).toString();
@@ -42,14 +46,10 @@ public class SqlFormatter {
 		if(formatMap == null || param == null) {
 			formatMap = Collections.EMPTY_MAP; 
 		} else {
-			Map<String,ParamHolder> paramMap = splitParam(srcSql);
+			List<ParamHolder> paramList = splitParam(srcSql);
 			
-			Set<Entry<String,ParamHolder>> set = paramMap.entrySet();
-			
-			for(Entry<String,ParamHolder> en : set) {
-				String name = en.getKey();
-				ParamHolder h = en.getValue();
-				
+			for(ParamHolder h : paramList) {
+				String name = h.holder;
 				Object obj = param.get(name);
 				
 				obj = (obj == null ? "":obj);
@@ -95,7 +95,8 @@ public class SqlFormatter {
 		        	 formatMap.put(name, value);
 				} else if(("<>=<=".indexOf(h.oper) > -1|| h.oper.equals("!=")) && StringUtils.isNotBlank(format = matchDate(value))) {
 					try {
-						formatMap.put(name, new SimpleDateFormat(format).parse(value));
+						if(!formatMap.containsKey(name))
+							formatMap.put(name, new SimpleDateFormat(format).parse(value));
 					} catch (ParseException e) {
 						 logger.debug(e.getMessage());
 					}
@@ -125,11 +126,10 @@ public class SqlFormatter {
 		return null;
 	}
 	
-	public static Map<String,ParamHolder> splitParam(String sql) {
+	private static List<ParamHolder> splitParam(String sql) {
 		Pattern pat = Pattern.compile(FULL_REGIX);  
 		Matcher mat = pat.matcher(sql);  
-		Map<String,ParamHolder> paramMap = new HashMap<String, ParamHolder>();
-		
+		List<ParamHolder> paramList = new ArrayList<ParamHolder>();
 		
 		while (mat.find()) {
 			 ParamHolder holder = new ParamHolder();
@@ -160,10 +160,10 @@ public class SqlFormatter {
 				 holder.holder = matchRet3.substring(1);
 			 }
 			 
-			 paramMap.put(holder.holder, holder);
+			 paramList.add(holder);
 		}
-		logger.debug(paramMap.toString());
-		return paramMap;
+		logger.debug(paramList.toString());
+		return paramList;
 	}
 	
    private static class ParamHolder {
@@ -180,4 +180,9 @@ public class SqlFormatter {
 			return new StringBuilder().append(full).append("/").append(key).append("/").append(oper).append("/").append(holder).toString();
 		}
 	}
+   
+   public static void main(String[] args) {
+	   String sql = "WHERE TO_CHAR(STORE_EFFECTIVE_DATE,'yyyy/MM/dd') <= :updateDate";
+	   SqlFormatter.splitParam(sql);
+   }
 }
