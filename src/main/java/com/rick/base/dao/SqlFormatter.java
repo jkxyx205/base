@@ -26,10 +26,12 @@ public class SqlFormatter {
 	
 //	private static final String COLUNM_REGEX = "[a-zA-Z0-9[\\.]_[-]]+";
 	//add column function
-	private static final String COLUNM_REGEX = "((?i)(to_char|NVL)?\\s*([(][^([(]|[)])]*[)])|[a-zA-Z0-9[\\.]_[-]]+)";
+	private static final String COLUNM_REGEX = "((?i)(to_char|NVL)?\\s*([(][^([(]|[)])]*[)])|[a-zA-Z0-9'[\\.]_[-]]+)";
 	
 	private static final String OPER_REGEX = "(?i)(like|!=|>=|<=|<|>|=|\\s+in|\\s+not\\s+in)";
-	private static final String HOLDER_REGEX = "[(\\s*]?:\\w+[\\s*)]?";
+	//private static final String HOLDER_REGEX = "[(\\s*]?:\\w+[\\s*)]?";
+	private static final String HOLDER_REGEX = "(([(\\s*]:\\w+[\\s*)])|(:\\w+))";
+	
 	private static final String PARAM_REGEX = ":\\w+";
 	private static final String FULL_REGIX = new StringBuilder().append(COLUNM_REGEX).append("\\s*").append(OPER_REGEX).append("\\s*").append(HOLDER_REGEX).toString();
 	
@@ -41,10 +43,9 @@ public class SqlFormatter {
 		DATE_FORMAT_MAP.put("\\d{4}-\\d{2}-\\d{2}", "yyyy-MM-dd");
 	}
 	
-	@SuppressWarnings("unchecked")
 	static String formatSql(String srcSql,Map<String,Object> param,Map<String, Object> formatMap,String paramInSeperator) {
 		if(formatMap == null || param == null) {
-			formatMap = Collections.EMPTY_MAP; 
+			return srcSql.replaceAll(FULL_REGIX, "1 = 1");
 		} else {
 			List<ParamHolder> paramList = splitParam(srcSql);
 			
