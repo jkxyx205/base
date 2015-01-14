@@ -75,7 +75,7 @@ $(function() {
 					pager:"#gridPager",
 					queryName:"testReport",
 					width:800,
-					colNames:['store_code','store_name','Region','City','Open Date','STATUS','SEGMENT'], //i18n
+					colNames:['store_code','store_name','Region','City','Open Date','STATUS','NON_TRADING_AREA','SEGMENT'], //i18n
 					colModel:[
 		                     {name:'STORE_CODE',index:'STORE_CODE', width:60, sorttype:"int",key:true},
 		                     {name:'STORE_NAME',index:'STORE_NAME', width:100},
@@ -83,6 +83,7 @@ $(function() {
 		                     {name:'CITY',index:'CITY', width:100}, 
 		                     {name:'OPENING_DATE',index:'OPENING_DATE', width:100}, 
 		                     {name:'STATUS',index:'STATUS', width:100}, 
+		                     {name:'NON_TRADING_AREA',index:'NON_TRADING_AREA', width:100}, 
 		                     {name:'SEGMENT',index:'SEGMENT', width:100,hidden:true} 
 		             ], 
 		             sortname:"STORE_CODE",

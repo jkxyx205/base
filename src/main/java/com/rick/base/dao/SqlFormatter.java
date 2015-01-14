@@ -33,7 +33,7 @@ public class SqlFormatter {
 	private static final String HOLDER_REGEX = "(([(\\s*]:\\w+[\\s*)])|(:\\w+))";
 	
 	private static final String PARAM_REGEX = ":\\w+";
-	private static final String FULL_REGIX = new StringBuilder().append(COLUNM_REGEX).append("\\s*").append(OPER_REGEX).append("\\s*").append(HOLDER_REGEX).toString();
+	private static final String FULL_REGEX = new StringBuilder().append(COLUNM_REGEX).append("\\s*").append(OPER_REGEX).append("\\s*").append(HOLDER_REGEX).toString();
 	
 	private static final Map<String,String> DATE_FORMAT_MAP;
 	
@@ -45,7 +45,7 @@ public class SqlFormatter {
 	
 	static String formatSql(String srcSql,Map<String,Object> param,Map<String, Object> formatMap,String paramInSeperator) {
 		if(formatMap == null || param == null) {
-			return srcSql.replaceAll(FULL_REGIX, "1 = 1");
+			return srcSql.replaceAll(FULL_REGEX, "1 = 1");
 		} else {
 			List<ParamHolder> paramList = splitParam(srcSql);
 			
@@ -128,7 +128,7 @@ public class SqlFormatter {
 	}
 	
 	private static List<ParamHolder> splitParam(String sql) {
-		Pattern pat = Pattern.compile(FULL_REGIX);  
+		Pattern pat = Pattern.compile(FULL_REGEX);  
 		Matcher mat = pat.matcher(sql);  
 		List<ParamHolder> paramList = new ArrayList<ParamHolder>();
 		
