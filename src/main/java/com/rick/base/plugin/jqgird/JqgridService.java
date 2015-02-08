@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rick.base.context.Constants;
 import com.rick.base.dao.BaseDaoImpl;
 import com.rick.base.dao.BaseDaoImpl.JdbcTemplateExecutor;
-import com.rick.base.dao.SqlFormatter;
 import com.rick.base.dictionary.DictionaryUtils;
 import com.rick.base.office.excel.excel2007.ExcelRow.ExcelRowBuilder;
 import com.rick.base.office.excel.excel2007.ExcelWorkbook;
@@ -62,8 +61,8 @@ class JqgridService {
 	@Resource
 	private BaseDaoImpl dao;
 	
-	JqgridJsonBO getResponse(HttpServletRequest reqeust) throws Exception {
-		Map<String,Object> param = ServletContextUtil.getMap(true, reqeust);
+	JqgridJsonBO getResponse(HttpServletRequest request) throws Exception {
+		Map<String,Object> param = ServletContextUtil.getMap(true, request);
 		
 		final PageModel model = getPageModel(param);
 		
@@ -71,7 +70,7 @@ class JqgridService {
 
 			public Long query(JdbcTemplate jdbcTemplate, String queryString,
 					Object[] args) {
-				queryString = SqlFormatter.formatSqlCount(queryString);
+				queryString = dao.formatSqlCount(queryString);
 				return jdbcTemplate.queryForObject(queryString, args, Long.class);
 			}
 		}); 
@@ -146,7 +145,7 @@ class JqgridService {
 
 			public Long query(JdbcTemplate jdbcTemplate, String queryString,
 					Object[] args) {
-				queryString = SqlFormatter.formatSqlCount(queryString);
+				queryString = dao.formatSqlCount(queryString);
 				return jdbcTemplate.queryForObject(queryString, args, Long.class);
 			}
 		}); 

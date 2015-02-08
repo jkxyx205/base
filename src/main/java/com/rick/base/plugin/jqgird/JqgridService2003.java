@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rick.base.context.Constants;
 import com.rick.base.dao.BaseDaoImpl;
 import com.rick.base.dao.BaseDaoImpl.JdbcTemplateExecutor;
-import com.rick.base.dao.SqlFormatter;
 import com.rick.base.office.excel.excel2003.ExcelRow.ExcelRowBuilder;
 import com.rick.base.office.excel.excel2003.ExcelWorkbook;
 /*import com.rick.base.office.excel.excel2007.ExcelRow.ExcelRowBuilder;
@@ -66,7 +65,7 @@ class JqgridService2003 {
 
 			public Long query(JdbcTemplate jdbcTemplate, String queryString,
 					Object[] args) {
-				queryString = SqlFormatter.formatSqlCount(queryString);
+				queryString = dao.formatSqlCount(queryString);
 				return jdbcTemplate.queryForObject(queryString, args, Long.class);
 			}
 		}); 
@@ -119,7 +118,7 @@ class JqgridService2003 {
 
 			public Long query(JdbcTemplate jdbcTemplate, String queryString,
 					Object[] args) {
-				queryString = SqlFormatter.formatSqlCount(queryString);
+				queryString = dao.formatSqlCount(queryString);
 				return jdbcTemplate.queryForObject(queryString, args, Long.class);
 			}
 		}); 
