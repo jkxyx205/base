@@ -1,4 +1,10 @@
 eclipse.preferences.version=1
+encoding//src/main/java/com/rick/base/dao/AbstractSqlFormatter.java=UTF-8
+encoding//src/main/java/com/rick/base/dao/MysqlSqlFormatter.java=UTF-8
+encoding//src/main/java/com/rick/base/dictionary/service/DictionaryXmlReader.java=UTF-8
+encoding//src/main/java/com/rick/base/util/MathUtil.java=UTF-8
 encoding//src/main/webapp/WEB-INF/pages/decorator/decorator.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/pages/login.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/pages/test/jqgird.jsp=UTF-8
+encoding//src/test/java/com/base/mail/MailTest.java=UTF-8
+encoding/<project>=UTF-8
