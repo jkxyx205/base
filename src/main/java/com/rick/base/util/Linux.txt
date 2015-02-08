@@ -1,0 +1,15 @@
+你可以先找到gdb的包的名字
+rpm -qa 
+
+之后根据这个名字
+rpm -ql XXXXX
+就找到安装位置了.
+
+#wget http://memcached.org/latest
+#tar -zxvf memcached-1.4.22.tar.gz
+#cd memcached-1.4.22
+#./configure && make && make test && sudo make install
+
+Trouble Maker SBS
+
+ 
