@@ -10,6 +10,15 @@ $(function(){
 });
 
 var common = function() {
+	function colNamesI18n(colNames) {
+		//i18n
+		for(var i in colNames) {
+			var name = colNames[i];
+			var name2 = I18nUtil.getMessageByCode(name);
+			if(name2)
+				colNames[i] = name2;
+		}
+	}
 	return {
 			/**
 			  * 模拟POST提交跳转
@@ -43,13 +52,7 @@ var common = function() {
 				
 				$.extend(settings,defaultSetting,_settings);
 				//i18n
-				var colNames = settings.colNames;
-				for(var i in colNames) {
-					var name = colNames[i];
-					var name2 = I18nUtil.getMessageByCode(name);
-					if(name2)
-						colNames[i] = name2;
-				}
+				colNamesI18n(settings.colNames);
 				
 				//get param
 				var $grid =  $(settings.id) ;
@@ -79,6 +82,7 @@ var common = function() {
 					var param = getParam();
 					var json = {
 							queryName:settings.queryName,
+							fileName:settings.fileName,
 							sidx:$grid.jqGrid("getGridParam","sortname"),
 							sord:$grid.jqGrid("getGridParam","sortorder"),
 							colNames:$grid.jqGrid("getGridParam","colNames"),
@@ -92,6 +96,33 @@ var common = function() {
 					return $(settings.queryform).form2json({allowEmptyMultiVal:true});
 				}
 				return $grid;
+			},
+			exportExcel:function(setting, param) {
+				var colModel = setting.colModel;
+			
+				var modelTemplate = {hidden:false,width:100};
+				
+				colNamesI18n(setting.colNames);
+				
+				var json = {
+						queryName:setting.queryName,
+						fileName:setting.fileName,
+						sidx:"",
+						sord:"",
+						colNames:setting.colNames,
+						colModel:(function() {
+							var _colModel = [];
+							for(var i in colModel) {
+								var model = {};
+								$.extend(model,modelTemplate,model);
+								model['index'] = model['name'] = colModel[i];
+								_colModel.push(model);
+							}
+							return _colModel;
+						})()
+				};
+				param.jqridJson = JSON.stringify(json); 
+				common.postSubmit("jqrid/export",param);
 			},
 			getRootPath :function(){  
 			    //获取当前网址，如： http://localhost:8083/proj/meun.jsp  
@@ -129,7 +160,7 @@ var common = function() {
 			formatDic4Text:function(keyOrAligns,value) {
 				if(!value)
 					return "";
-				var trueValue;
+				var trueValue = "";
 				var map = formatDic4Map(keyOrAligns);
 				
 				if(map) {

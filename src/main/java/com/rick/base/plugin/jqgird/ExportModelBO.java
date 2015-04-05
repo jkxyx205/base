@@ -8,13 +8,22 @@ class ExportModelBO {
 	private	String sidx;
 	private String sord;
 	private String[] colNames;
+	private List<Map<String,Object>> colModel;
+	
+	private String fileName;
+	
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 	public String[] getColNames() {
 		return colNames;
 	}
 	public void setColNames(String[] colNames) {
 		this.colNames = colNames;
 	}
-	List<Map<String,Object>> colModel;
 	public String getQueryName() {
 		return queryName;
 	}

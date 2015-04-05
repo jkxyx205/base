@@ -36,7 +36,7 @@
 				<td><input name="STORE_NAME" id="STORE_NAME" type="text" class="form-control" placeholder="<s:message code="store_name"/>"></td>
 				<td class="tbName"><label for="STATUS"><s:message code="store_status"/>:</label></td>
 				<td>
-					<r:select name="STATUS" key="STORE_STATUS" multiple="true"/>
+					<r:select name="STATUS" key="STATUS" multiple="true"/>
 				</td>
 			</tr>
 			<tr>
@@ -54,6 +54,7 @@
 				<button name="search" type="button" class="btn btn-primary"><s:message code="submit"/></button>
 				<button name="reset"  type="button" class="btn btn-primary"><s:message code="reset"/></button>
 				<button authId = "store.export" name="export" type="button" class="btn btn-primary"><s:message code="export"/></button>
+				<button name="autoExport" type="button" class="btn btn-primary" onclick="exportExcel();">自定义</button>
 			</div>
 		</div>
 	</form>
@@ -74,6 +75,7 @@ $(function() {
 					id:"#gridTable",
 					pager:"#gridPager",
 					queryName:"testReport",
+					fileName:"ashley",
 					width:800,
 					colNames:['store_code','store_name','Region','City','Open Date','STATUS','NON_TRADING_AREA','SEGMENT'], //i18n
 					colModel:[
@@ -116,6 +118,18 @@ $(function() {
 	 //alert(rowDatas["STORE_NAME"]);
 	 //多选
 	 var store_codes = $gird.jqGrid("getGridParam", "selarrrow");
+	}
+	
+	function exportExcel() {
+		common.exportExcel(
+							{ //setting
+								colNames:['store_code','store_name'],
+								colModel:['STORE_CODE','STORE_NAME'],
+								queryName:'testReport',
+								fileName:"rick"
+							}
+							,{} //param
+						   );
 	}
 </script>
 </body>

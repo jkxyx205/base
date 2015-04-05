@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.rick.base.dictionary.DictionaryUtils;
+import com.rick.base.dictionary.service.DictionaryUtils;
 
 class SelectUtil {
 	static String selectString(String name,String key,boolean multiple) {

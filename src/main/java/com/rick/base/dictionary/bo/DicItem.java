@@ -1,5 +1,7 @@
 package com.rick.base.dictionary.bo;
 
+import com.rick.base.util.I18nUtil;
+
 /** 
  * <description> 
  * 对应表：zyk_gg_zdxb

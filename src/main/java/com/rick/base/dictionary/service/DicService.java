@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rick.base.context.Constants;
 import com.rick.base.dao.BaseDaoImpl;
-import com.rick.base.dictionary.DictionaryUtils;
 import com.rick.base.dictionary.bo.DicItem;
 import com.rick.base.dictionary.bo.Dictionary;
 import com.rick.base.dictionary.bo.ItemKey;

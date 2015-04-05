@@ -14,7 +14,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Service;
 
 import com.rick.base.dao.BaseDaoImpl;
-import com.rick.base.dictionary.DictionaryUtils;
+import com.rick.base.dictionary.service.DictionaryUtils;
 import com.rick.base.test.bean.SmScenario;
 
 @Service("tservice")

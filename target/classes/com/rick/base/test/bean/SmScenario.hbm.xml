@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	  
+ <sql-query name="querySmscenario">
+ 	<![CDATA[
+ 		 SELECT T.ID, T.STORE_CODE FROM SM_SCENARIO T WHERE T.ID = ?
+    ]]>
+	</sql-query>
+	
+ <sql-query name="querySmscenario2">
+ 	<![CDATA[
+ 		 SELECT T.ID, T.STORE_CODE FROM SM_SCENARIO T WHERE T.ID = ?
+    ]]>
+	</sql-query>
+	
+ <sql-query name="querySmscenario3">
+ 	<![CDATA[
+ 		 SELECT T.ID, T.STORE_CODE,T.BU_CODE FROM SM_SCENARIO T WHERE T.ID = ?
+    ]]>
+	</sql-query>
+	
+	<sql-query name="querySmscenario4">
+ 	<![CDATA[
+ 		 SELECT T.ID, T.STORE_CODE,T.BU_CODE FROM SM_SCENARIO T WHERE T.ID = :ID AND T.STORE_CODE  IN ( :STORE_CODE ) AND T.CREATED_DT < :CREATE_DATE
+    ]]>
+	</sql-query>
+	
+	<sql-query name="testReport">
+	<![CDATA[
+		SELECT T.* FROM MD_STORE_BASIC_INFO T WHERE T.STORE_CODE = :STORE_CODE AND T.STORE_NAME LIKE :STORE_NAME AND T.OPENING_DATE < :OPENING_DATE
+		AND T.STATUS in (:STATUS) AND T.REGION = :REGION
+    ]]>
+	</sql-query>
+	
+    <sql-query name="testUpdate">
+	<![CDATA[
+		 update MD_STORE_BASIC_INFO t set t.store_name = :store_name where t.id = '2c928a1349a77b3c0149a78b7a380000'
+    ]]>
+	</sql-query>
+	
+	
+	
+	
+</hibernate-mapping>

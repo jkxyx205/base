@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rick.base.context.Constants;
 import com.rick.base.dao.BaseDaoImpl;
 import com.rick.base.dao.BaseDaoImpl.JdbcTemplateExecutor;
-import com.rick.base.dictionary.DictionaryUtils;
+import com.rick.base.dictionary.service.DictionaryUtils;
 import com.rick.base.office.excel.excel2007.ExcelRow.ExcelRowBuilder;
 import com.rick.base.office.excel.excel2007.ExcelWorkbook;
 import com.rick.base.util.ServletContextUtil;
@@ -277,23 +277,28 @@ class JqgridService {
 		});
 		
 		OutputStream os;
+		
+		//
+		String fileName = StringUtils.isBlank(model.getFileName()) ? model.getQueryName() : model.getFileName();
+		
+		
 		if(bookList.size() == 1) { //single export
-			os = ServletContextUtil.getOsFromResponse(response, request, model.getQueryName() + ".xlsx");
+			os = ServletContextUtil.getOsFromResponse(response, request, fileName + ".xlsx");
 			bookList.get(0).write(os);
 		} else { //zip export
-			os = ServletContextUtil.getOsFromResponse(response, request, model.getQueryName() + ".zip");
+			os = ServletContextUtil.getOsFromResponse(response, request, fileName + ".zip");
 			
 			int j = 0;
 			final File[] fileArr = new File[bookList.size()];
 			
 			for(ExcelWorkbook book : bookList) {
-				File file = new File(Constants.getInstance().TMP_DIR,new StringBuilder(model.getQueryName()).append("_").append(j +1).append(".xlsx").toString());
+				File file = new File(Constants.getInstance().TMP_DIR,new StringBuilder(fileName).append("_").append(j +1).append(".xlsx").toString());
 				book.write(file);
 				fileArr[j++] = file;
 			}
 			
 			//zip
-			final File file = new File(Constants.getInstance().TMP_DIR,model.getQueryName() + ".zip");
+			final File file = new File(Constants.getInstance().TMP_DIR,fileName + ".zip");
 			ZipUtil.compress(fileArr, file);
 			os.write(FileUtils.readFileToByteArray(file));
 			os.close();
