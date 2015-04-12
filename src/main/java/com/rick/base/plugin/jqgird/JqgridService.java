@@ -66,7 +66,7 @@ class JqgridService {
 		
 		final PageModel model = getPageModel(param);
 		
-		long total = dao.queryForSpecificParamCount(model.queryName, param,new JdbcTemplateExecutor<Long>() {
+		long count = dao.queryForSpecificParamCount(model.queryName, param,new JdbcTemplateExecutor<Long>() {
 
 			public Long query(JdbcTemplate jdbcTemplate, String queryString,
 					Object[] args) {
@@ -92,15 +92,17 @@ class JqgridService {
 				
 		JqgridJsonBO bo = new JqgridJsonBO();
 		
-		if(total%model.records == 0) {
-			total = total/model.records; 
+		long total = 0L;
+		
+		if(count%model.records == 0) {
+			total = count/model.records; 
 		} else {
-			total = total/model.records + 1;
+			total = count/model.records + 1;
 		}
 		bo.setTotal(total);
 		bo.setRows(rows);
 		bo.setPage(model.page);
-		bo.setRecords(model.records);
+		bo.setRecords(count);
 		
 		return bo;
 	}

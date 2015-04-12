@@ -54,4 +54,10 @@ public class TestController {
 		return "test/register";
 	}
 	
+	@RequestMapping(value="/quartz")
+	public String gotoQuartz() {
+		return "quartz/quartz";
+	}
+	
+	
 }

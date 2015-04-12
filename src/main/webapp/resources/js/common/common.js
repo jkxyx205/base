@@ -62,6 +62,7 @@ var common = function() {
 				//register event
 				$(settings.queryform + " button[name=search]").click(function() {
 					var param = getParam();
+					$grid.jqGrid("setGridParam", {postData:null});
 					$grid.jqGrid("setGridParam", { url:"jqrid",postData:param}).trigger("reloadGrid", [{page:1}]);
 				});
 				

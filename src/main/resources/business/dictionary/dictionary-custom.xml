@@ -11,4 +11,16 @@
         </map>
 		<column-pattern>flag</column-pattern>
 	</custom>
+	<custom>
+		<key>JOB_STATUS</key>
+		<description>XXXX</description>
+		<!-- 自定义的映射 -->
+		<map>
+	      	<entry key="0">Pause</entry>
+	      	<entry key="1">Resume</entry>
+        </map>
+		<column-pattern>JOB_STATUS</column-pattern>
+	</custom>
+	
+	
 </dictionary-config>

@@ -11,6 +11,8 @@ import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.NamedSQLQueryDefinition;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,8 +21,6 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
-
-import com.rick.base.dao.sqlreader.SQLReader;
 
 /**
  * @author Rick.Xu
@@ -100,15 +100,15 @@ public class BaseDaoImpl {
 	}
 
 	public String getNamedQueryString(String queryName) {
-		/*SessionFactoryImpl factory = (SessionFactoryImpl) getSessionFactory();
+		SessionFactoryImpl factory = (SessionFactoryImpl) getSessionFactory();
 		NamedSQLQueryDefinition nqd = factory.getNamedSQLQuery(queryName);
-		return nqd.getQueryString();*/
-		try {
+		return nqd.getQueryString();
+		/*try {
 			return SQLReader.getSQLbyName(queryName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	public <T> T queryForSpecificParam(String queryName,

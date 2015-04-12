@@ -1,6 +1,5 @@
 package com.rick.base.dictionary.bo;
 
-import com.rick.base.util.I18nUtil;
 
 /** 
  * <description> 

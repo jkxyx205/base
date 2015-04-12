@@ -12,6 +12,6 @@
 <script type="text/javascript" src="resources/js/common/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="resources/js/common/common.js"></script>
 <script type="text/javascript">
-	common.postSubmit("testi18n",{"test":"xx"});
+	<a href="${pageContext.request.contextPath}/quartz">quartz.jsp</a>
 </script>
 </html>

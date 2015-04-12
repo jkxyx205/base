@@ -25,7 +25,7 @@
 	<listener>
 	    <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
 	</listener>
-<filter>
+<!-- <filter>
 	<filter-name>auth</filter-name>
 	<filter-class>com.rick.base.context.filter.auth.AuthFilter</filter-class>
 </filter>
@@ -37,7 +37,8 @@
     <dispatcher>ERROR</dispatcher>
     <dispatcher>INCLUDE</dispatcher>
 </filter-mapping>
-<filter>
+-->
+<filter> 
              <filter-name>encodingFilter</filter-name>
              <filter-class>
                         org.springframework.web.filter.CharacterEncodingFilter
