@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,14 +23,16 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.stereotype.Service;
 
 import com.rick.base.dao.BaseDaoImpl;
 import com.rick.base.plugin.quartz.model.ScheduleJob;
 import com.rick.base.plugin.quartz.schedule.QuartzJobFactory;
 import com.rick.base.plugin.quartz.schedule.ScheduleUtils;
 
-public class AbstractScheduleServiceImpl {
-	private static final transient Logger logger = LoggerFactory.getLogger(RAMScheduleServiceImpl.class);
+@Service
+public class ScheduleServiceImpl implements ScheduleService {
+	private static final transient Logger logger = LoggerFactory.getLogger(ScheduleServiceImpl.class);
 	
 	@Resource	
 	private BaseDaoImpl dao;
@@ -37,6 +40,7 @@ public class AbstractScheduleServiceImpl {
 	@Resource
 	private SchedulerFactoryBean schedulerFactoryBean;
 	
+	@PostConstruct
 	public void init() throws SchedulerException {
 		List<ScheduleJob> list = getAllJobs();
 		for(ScheduleJob scheduleJob : list) {
@@ -204,4 +208,45 @@ public class AbstractScheduleServiceImpl {
 	}
 	
 	private static final String ALL_JOB_SQL = "select t.job_name,t.job_group,t.cron_expression,t.method_name,t.bean_class, t.bean_id,t.job_status,t.id from QUARTZ_SCHEDULE_JOB t" ;
+	
+	public void pauseJob(int id) throws SchedulerException {
+		ScheduleJob scheduleJob = getScheduleJobById(id);
+		pauseJob(scheduleJob);
+	}
+	
+	public void pauseJob(ScheduleJob scheduleJob) throws SchedulerException {
+		if(scheduleJob == null) 
+			return;
+		
+		Scheduler scheduler = schedulerFactoryBean.getScheduler();
+		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
+		scheduler.pauseJob(jobKey);
+		
+		changJobStatus(scheduleJob.getId(),ScheduleJob.STATUS_NOT_RUNNING);
+		
+	}
+	
+
+	public void resumeJob(int id) throws SchedulerException {
+		ScheduleJob scheduleJob = getScheduleJobById(id);
+		if(scheduleJob == null) 
+			return;
+		
+		Scheduler scheduler = schedulerFactoryBean.getScheduler();
+		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
+		scheduler.resumeJob(jobKey);
+		
+		changJobStatus(id,ScheduleJob.STATUS_RUNNING);
+	}
+
+	public void deleteJob(int id) throws SchedulerException {
+		ScheduleJob scheduleJob = getScheduleJobById(id);
+		if(scheduleJob == null) 
+			return;
+		
+		Scheduler scheduler = schedulerFactoryBean.getScheduler();
+		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
+		scheduler.deleteJob(jobKey);
+	}
+
 }

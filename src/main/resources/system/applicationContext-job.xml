@@ -21,7 +21,7 @@
 
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 		<!-- 以下是集群下的quartz配置文件 -->
-<!--   	     <property name="dataSource">
+   	   <!--   <property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
 		<property name="configLocation" value="classpath:system/quartz.properties" />

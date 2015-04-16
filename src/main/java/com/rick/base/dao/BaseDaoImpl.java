@@ -125,7 +125,32 @@ public class BaseDaoImpl {
 		return jdbcTemplateExecutor.query(jdbcTemplate, formatSql, args);
 	}
 	
-	public void executeForSpecificParam(String queryName,
+	public <T> T queryForSpecificParam(String queryName,
+			Object param,
+			JdbcTemplateExecutor<T> jdbcTemplateExecutor) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return queryForSpecificParam(queryName, map, PARAM_IN_SEPERATOR,
+				jdbcTemplateExecutor);
+	}
+	
+	public <T> T queryForSpecificParam(String queryName,
+			Object param,String paramInSeperator,
+			JdbcTemplateExecutor<T> jdbcTemplateExecutor) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return queryForSpecificParam(queryName, map, PARAM_IN_SEPERATOR,
+				jdbcTemplateExecutor);
+	}
+	
+	
+
+	public <T> T queryForSpecificParam(String queryName,
+			Map<String, Object> param,
+			JdbcTemplateExecutor<T> jdbcTemplateExecutor) {
+		return queryForSpecificParam(queryName, param, PARAM_IN_SEPERATOR,
+				jdbcTemplateExecutor);
+	}
+	
+	public int executeForSpecificParam(String queryName,
 			Map<String, Object> param, String paramInSeperator) {
 		String sql = getNamedQueryString(queryName);
 		Map<String, Object> formatMap = new HashMap<String, Object>();
@@ -135,23 +160,33 @@ public class BaseDaoImpl {
 		Object[] args = NamedParameterUtils.buildValueArray(formatSql,
 				formatMap);
 		
-		jdbcTemplate.update(formatSql, args);
+		int count = jdbcTemplate.update(formatSql, args);
 		logger.debug(formatSql + "=>" + formatMap);
+		
+		return count;
 	}
 	
-	public void executeForSpecificParam(String queryName,
+	public int executeForSpecificParam(String queryName,
 			Map<String, Object> param) {
-		executeForSpecificParam(queryName,
+		return executeForSpecificParam(queryName,
 				param,PARAM_IN_SEPERATOR);
 	}
 	
-
-	public <T> T queryForSpecificParam(String queryName,
-			Map<String, Object> param,
-			JdbcTemplateExecutor<T> jdbcTemplateExecutor) {
-		return queryForSpecificParam(queryName, param, PARAM_IN_SEPERATOR,
-				jdbcTemplateExecutor);
+	public int executeForSpecificParam(String queryName,
+			Object param) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return executeForSpecificParam(queryName,
+				map,PARAM_IN_SEPERATOR);
 	}
+	
+	public int executeForSpecificParam(String queryName,
+			Object param, String paramInSeperator) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return executeForSpecificParam(queryName,
+				map,PARAM_IN_SEPERATOR);
+	}
+	
+	
 
 	public long queryForSpecificParamCount(String queryName,
 			Map<String, Object> param, String paramInSeperator,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
@@ -166,6 +201,25 @@ public class BaseDaoImpl {
 		return jdbcTemplate.queryForObject(formatSql, args, Long.class);
 	}
 
+	
+	public long queryForSpecificParamCount(String queryName,
+			Map<String, Object> param,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
+		return queryForSpecificParamCount(queryName, param, PARAM_IN_SEPERATOR,jdbcTemplateExecutor);
+	}
+
+	public long queryForSpecificParamCount(String queryName,
+			Object param,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return queryForSpecificParamCount(queryName, map, PARAM_IN_SEPERATOR,jdbcTemplateExecutor);
+	}
+
+	
+	public long queryForSpecificParamCount(String queryName,
+			Object param,String paramInSeperator,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
+		Map<String, Object> map = Utils.bean2Map(param);
+		return queryForSpecificParamCount(queryName, map, PARAM_IN_SEPERATOR,jdbcTemplateExecutor);
+	}
+	
 	public String formatSqlCount(String srcSql) {
 		return sqlFormatter.formatSqlCount(srcSql);
 	}
@@ -174,18 +228,10 @@ public class BaseDaoImpl {
 		return sqlFormatter.formatSql(srcSql, param, formatMap, paramInSeperator);
 	}
 	
-	
-	
-	public long queryForSpecificParamCount(String queryName,
-			Map<String, Object> param,JdbcTemplateExecutor<Long> jdbcTemplateExecutor) {
-		return queryForSpecificParamCount(queryName, param, PARAM_IN_SEPERATOR,jdbcTemplateExecutor);
-	}
+
 
 	public interface JdbcTemplateExecutor<T> {
 		public T query(JdbcTemplate jdbcTemplate, String queryString,
 				Object[] args);
 	}
- 
-	
-
 }

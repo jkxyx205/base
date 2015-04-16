@@ -67,6 +67,9 @@
 <script type="text/javascript">
 var $gird;
 $(function() {
+
+	
+	
 		$('#STATUS').multiselect({
 			buttonWidth:200
 			//numberDisplayed:100
@@ -77,6 +80,7 @@ $(function() {
 					pager:"#gridPager",
 					queryName:"testReport",
 					fileName:"ashley",
+					data:{"name":"Rick.Xu"},
 					width:800,
 					colNames:['store_code','store_name','Region','City','Open Date','STATUS','NON_TRADING_AREA','SEGMENT'], //i18n
 					colModel:[
@@ -92,7 +96,7 @@ $(function() {
 		             sortname:"STORE_CODE",
 		             sortorder:'asc',
 		             multiselect:true,
-		             queryform:"#queryForm" //optional
+		             queryForm:"#queryForm" //optional
 		});
 			
 		 
@@ -109,7 +113,12 @@ $(function() {
 		 });
 
 		 //alert((I18nUtil.lang));
+		 
+	    //ajaxGetData();
+	    ajaxUpdateData();
   }); 
+  
+  
 
 	function getSelectedData() {
 	 //单选	
@@ -132,6 +141,35 @@ $(function() {
 							,{} //param
 						   );
 	}
+	
+	
+	//ajax获取数据
+	function ajaxGetData() {
+		common.ajaxQuery({
+			queryName:"testReport",
+			//data:{STORE_CODE:"12"},
+			success:function(data) {
+				 
+			}
+		});
+	}
+	
+	//ajax执行
+	function ajaxUpdateData() {
+		common.ajaxUpdate({
+			queryName:"testUpdate",
+			data:{store_name:"elseName"},
+			success:function(data) {
+				 debugger;
+			}
+		});
+	}
+	
+	
+
+	
+	
+	
 </script>
 </body>
 </html>

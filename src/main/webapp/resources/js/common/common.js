@@ -38,19 +38,22 @@ var common = function() {
 				form.submit();
 			},
 			grid : function(_settings) {
-				var settings = {};
-				var defaultSetting = {
+				var settings = {
 						url:"jqrid",
 		                datatype: "json",
+		                mtype:'POST',
 		                height: 250,
 		                viewrecords:true,
 		                rowNum:10,
 		                multiselect:true,
 		                rownumbers:true,
 		                rowList:[10,20,30],
+		                serializeGridData:function(postData) {
+		                	return postData;
+		                }
 		        };
 				
-				$.extend(settings,defaultSetting,_settings);
+				$.extend(settings,_settings);
 				//i18n
 				colNamesI18n(settings.colNames);
 				
@@ -60,15 +63,15 @@ var common = function() {
 				$grid.jqGrid(settings);
 				
 				//register event
-				$(settings.queryform + " button[name=search]").click(function() {
+				$(settings.queryForm + " button[name=search]").click(function() {
 					var param = getParam();
-					$grid.jqGrid("setGridParam", {postData:null});
+					//$grid.jqGrid("setGridParam", {postData:null});
 					$grid.jqGrid("setGridParam", { url:"jqrid",postData:param}).trigger("reloadGrid", [{page:1}]);
 				});
 				
-				$(settings.queryform + " button[name=reset]").click(function() {
-					$(settings.queryform).resetForm();
-					$(settings.queryform).clearForm(true);
+				$(settings.queryForm + " button[name=reset]").click(function() {
+					$(settings.queryForm).resetForm();
+					$(settings.queryForm).clearForm(true);
 					//reset multi select
 					$("select[multiple]").each(function() {
 						$(this).find("option").each(function() {
@@ -79,7 +82,7 @@ var common = function() {
 		           
 				});
 				
-				$(settings.queryform + " button[name=export]").on("click",function() {
+				$(settings.queryForm + " button[name=export]").on("click",function() {
 					var param = getParam();
 					var json = {
 							queryName:settings.queryName,
@@ -94,7 +97,16 @@ var common = function() {
 				});
 				
 				function getParam() {
-					return $(settings.queryform).form2json({allowEmptyMultiVal:true});
+					var param = {};
+					if(settings.queryForm != undefined) {
+						param = $(settings.queryForm).form2json({allowEmptyMultiVal:true});
+					}
+					
+					if(settings.data != undefined) {
+						$.extend(param,settings.data);
+					}
+						
+					return param;
 				}
 				return $grid;
 			},
@@ -124,6 +136,31 @@ var common = function() {
 				};
 				param.jqridJson = JSON.stringify(json); 
 				common.postSubmit("jqrid/export",param);
+			},
+			ajaxQuery:function(_settings) {
+				var settings = {
+						url:"jqrid",
+		                datatype: "json",
+		                type:'POST',
+		                data:{}
+				};
+				$.extend(settings,_settings);
+				settings.data.reloadAll = "true";
+				settings.data.queryName = settings.queryName;
+				//添加jqrid所需要的参数
+				$.ajax(settings);
+			},
+			ajaxUpdate:function(_settings) {
+				var settings = {
+						url:"update",
+		                datatype: "json",
+		                type:'POST',
+		                data:{}
+				};
+				$.extend(settings,_settings);
+				settings.data.queryName = settings.queryName;
+				//添加jqrid所需要的参数
+				$.ajax(settings);
 			},
 			getRootPath :function(){  
 			    //获取当前网址，如： http://localhost:8083/proj/meun.jsp  

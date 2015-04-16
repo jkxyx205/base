@@ -8,21 +8,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.rick.base.plugin.quartz.service.QuartzManager;
+import com.rick.base.plugin.quartz.service.ScheduleService;
 
 @Controller
 @RequestMapping("/quartz")
 public class QuartzController {
 	
 	@Resource
-	private QuartzManager manager;
+	private ScheduleService scheduleService;
 	
 	@RequestMapping("/runJobNow/{id}")
 	@ResponseBody
 	public String execute(@PathVariable int id) {
 		String res = "fail";
 		try {
-			manager.runJobNow(id);
+			scheduleService.runJobNow(id);
 			res = "success";
 		} catch (SchedulerException e) {
 			e.printStackTrace();
@@ -35,7 +35,7 @@ public class QuartzController {
 	public String resumeJob(@PathVariable int id) {
 		String res = "fail";
 		try {
-			manager.resumeJob(id);
+			scheduleService.resumeJob(id);
 			res = "success";
 		} catch (SchedulerException e) {
 			e.printStackTrace();
@@ -49,7 +49,7 @@ public class QuartzController {
 	public String pauseJob(@PathVariable int id) {
 		String res = "fail";
 		try {
-			manager.pauseJob(id);
+			scheduleService.pauseJob(id);
 			res = "success";
 		} catch (SchedulerException e) {
 			e.printStackTrace();
@@ -63,7 +63,7 @@ public class QuartzController {
 	public String confJob(int id,String cronExpression) {
 		String res = "fail";
 		try {
-			manager.updateJobCron(id, cronExpression);
+			scheduleService.updateJobCron(id, cronExpression);
 			res = "success";
 		} catch (SchedulerException e) {
 			e.printStackTrace();

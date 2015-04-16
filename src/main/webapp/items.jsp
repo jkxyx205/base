@@ -9,6 +9,10 @@
 <body>
 <a href="${pageContext.request.contextPath}/quartz">quartz.jsp</a><br/>
 <a href="${pageContext.request.contextPath}/testJqgrid">jqgird.jsp</a><br/>
+<a href="${pageContext.request.contextPath}/register">register.jsp</a><br/>
+<a href="${pageContext.request.contextPath}/login">login.jsp</a><br/>
+<a href="${pageContext.request.contextPath}/bootstrap">bootstrap.jsp</a><br/>
+<a href="${pageContext.request.contextPath}/testi18n">testi18n.jsp</a><br/>
 </body>
 <script type="text/javascript" src="resources/js/common/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="resources/js/common/common.js"></script>

@@ -50,6 +50,7 @@ class JqgridService {
 	private static final String JQGIRD_PARAM_PAGE = "page";
 	private static final String JQGIRD_PARAM_ROW = "rows";
 	private static final String JQGIRD_PARAM_QUERYNAME = "queryName";
+	private static final String JQGIRD_PARAM_RELOADALL = "reloadAll";
 	private static final String JQGIRD_PARAM_SIDX = "sidx";
 	private static final String JQGIRD_EXPORT_JSON = "jqridJson";
 	private static final String JQGIRD_EXPORT_COLMODEL_INDEX = "index";
@@ -79,11 +80,12 @@ class JqgridService {
 
 			public List<Map<String, Object>> query(JdbcTemplate jdbcTemplate,
 					String queryString, Object[] args) {
-				String sql = pageSql(queryString,model);
+				if(!BOOLEAN_TRUE.equals(model.reloadAll))
+					queryString = pageSql(queryString,model);
 				//return jdbcTemplate.queryForList(sql, args);
 				
 				//user dictionary
-				List<Map<String, Object>>  ret = jdbcTemplate.queryForList(sql, args);
+				List<Map<String, Object>>  ret = jdbcTemplate.queryForList(queryString, args);
 				translate(ret);
 				return ret;
 				
@@ -94,14 +96,17 @@ class JqgridService {
 		
 		long total = 0L;
 		
-		if(count%model.records == 0) {
-			total = count/model.records; 
-		} else {
-			total = count/model.records + 1;
+		if(!BOOLEAN_TRUE.equals(model.reloadAll)) {
+			if(count%model.rows == 0) {
+				total = count/model.rows; 
+			} else {
+				total = count/model.rows + 1;
+			}
+			bo.setTotal(total);
+			bo.setPage(model.page);
 		}
-		bo.setTotal(total);
+		
 		bo.setRows(rows);
-		bo.setPage(model.page);
 		bo.setRecords(count);
 		
 		return bo;
@@ -127,10 +132,15 @@ class JqgridService {
 	private PageModel getPageModel(Map<String,Object> param) {
 		PageModel model = new PageModel();
 		model.queryName = (String) param.get(JQGIRD_PARAM_QUERYNAME);
-		model.page = Integer.parseInt(param.get(JQGIRD_PARAM_PAGE).toString());
-		model.records = Integer.parseInt(param.get(JQGIRD_PARAM_ROW).toString());
-		model.sord = (String) param.get(JQGIRD_PARAM_SORD);
-		model.sidx = (String) param.get(JQGIRD_PARAM_SIDX);
+		model.reloadAll = (String) param.get(JQGIRD_PARAM_RELOADALL);
+		
+		if(!BOOLEAN_TRUE.equals(model.reloadAll)) { //需要分页操作
+			model.page = Integer.parseInt(param.get(JQGIRD_PARAM_PAGE).toString());
+			model.rows = Integer.parseInt(param.get(JQGIRD_PARAM_ROW).toString());
+			model.sord = (String) param.get(JQGIRD_PARAM_SORD);
+			model.sidx = (String) param.get(JQGIRD_PARAM_SIDX);
+		}
+		
 		return model;
 	}
 	private ExportModelBO getExportModelBO(String json) throws JsonParseException, JsonMappingException, IOException {
@@ -355,8 +365,8 @@ class JqgridService {
 	private String pageSql(String sql, PageModel model) {
 		StringBuilder sb = new  StringBuilder();
 		
-		int startIndex = (model.page-1)*model.records;
-		int endIndex = startIndex + model.records;
+		int startIndex = (model.page-1)*model.rows;
+		int endIndex = startIndex + model.rows;
 		
 		//
 		sb.append("SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM ")
@@ -381,10 +391,12 @@ class JqgridService {
 	
 	private class PageModel {
 		int page;
-		int records;
+		int rows;
 		String sidx;
 		String sord;
 		String queryName;
+		//一次女性全部加载出来,不在分页
+		String reloadAll;
 	}
 	
 	private class HeadProperty {
@@ -392,4 +404,10 @@ class JqgridService {
 		private String[] names;
 		private String[] columnNames;
 	}
+	
+	private static final String BOOLEAN_TRUE = "true";
+	
+	@SuppressWarnings("unused")
+	private static final String BOOLEAN_FALSE = "false";
+	
 }

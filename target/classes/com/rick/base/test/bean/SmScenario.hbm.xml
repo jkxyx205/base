@@ -39,8 +39,4 @@
 		 update MD_STORE_BASIC_INFO t set t.store_name = :store_name where t.id = '2c928a1349a77b3c0149a78b7a380000'
     ]]>
 	</sql-query>
-	
-	
-	
-	
 </hibernate-mapping>

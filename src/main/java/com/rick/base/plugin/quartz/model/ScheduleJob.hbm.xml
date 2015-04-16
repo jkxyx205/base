@@ -42,22 +42,4 @@
  	  	update QUARTZ_SCHEDULE_JOB t set t.cron_expression = ? where t.id = ?
     ]]>
 </sql-query>
-
- 
-<!-- 数据库持久化 -->
- <sql-query name="qrtz_changJobStatus">
- 	<![CDATA[
- 	  	update QRTZ_TRIGGERS t set t.trigger_state = ? where t.trigger_name = ? and t.trigger_group = ?
-    ]]>
-</sql-query>
-
- <sql-query name="qrtz_changCronExpression">
- 	<![CDATA[
- 	  	update QRTZ_CRON_TRIGGERS t set t.cron_expression = ? where t.trigger_group = ? and t.trigger_name = ?
-    ]]>
-</sql-query>
-
-
-
-	
 </hibernate-mapping>
