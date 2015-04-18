@@ -67,14 +67,7 @@ class JqgridService {
 		
 		final PageModel model = getPageModel(param);
 		
-		long count = dao.queryForSpecificParamCount(model.queryName, param,new JdbcTemplateExecutor<Long>() {
 
-			public Long query(JdbcTemplate jdbcTemplate, String queryString,
-					Object[] args) {
-				queryString = dao.formatSqlCount(queryString);
-				return jdbcTemplate.queryForObject(queryString, args, Long.class);
-			}
-		}); 
 		
 		List<Map<String, Object>> rows = dao.queryForSpecificParam(model.queryName, param, new JdbcTemplateExecutor<List<Map<String, Object>>>() {
 
@@ -91,6 +84,22 @@ class JqgridService {
 				
 			}
 		});
+		
+		long count = 0L;
+		
+		if(BOOLEAN_TRUE.equals(model.reloadAll)) {
+			count = rows.size();
+		} else {
+			count = dao.queryForSpecificParamCount(model.queryName, param,new JdbcTemplateExecutor<Long>() {
+
+				public Long query(JdbcTemplate jdbcTemplate, String queryString,
+						Object[] args) {
+					queryString = dao.formatSqlCount(queryString);
+					return jdbcTemplate.queryForObject(queryString, args, Long.class);
+				}
+			}); 
+		}
+		
 				
 		JqgridJsonBO bo = new JqgridJsonBO();
 		

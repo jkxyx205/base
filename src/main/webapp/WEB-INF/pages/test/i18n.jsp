@@ -44,7 +44,7 @@ input.error {
 				<td><input name="password" id="password" type="password"></td>
 			</tr>
 			<tr>
-				<td><input id="btn_submit" type="button" value="<s:message code="submit"/>"></td>
+				<td><input id="btn_submit" type="submit" value="<s:message code="submit"/>"></td>
 				<td><input id="btn_reset" type="reset" value="<s:message code="reset"/>"></td>
 			</tr>
 			<tr>
@@ -79,7 +79,7 @@ input.error {
 			}
 		});
 		
-		$("#btn_submit").click(function() {
+		$("#login").submit(function() {
 			 $("#login").ajaxSubmit(
 			    {
 				 url:"login",
@@ -90,6 +90,8 @@ input.error {
 				 success:function(data) {
 	 				alert(data);
 				}});
+			 
+			 return false; //非常重要，如果是false，则表明是不跳转，在本页上处理，也就是ajax，如果是非false，则传统的form跳转。
 		});
 	});
 </script>

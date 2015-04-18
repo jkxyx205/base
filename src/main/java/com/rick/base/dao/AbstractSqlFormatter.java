@@ -110,7 +110,7 @@ public abstract class AbstractSqlFormatter {
 	}
 	
 	public String formatSqlCount(String srcSql) {
-		srcSql = srcSql.replaceAll("(?i)order\\s+by\\s+(\\S+)\\s+(desc|asc)?","");
+		srcSql = srcSql.replaceAll("(?i)(order\\s+by\\s+(\\S+)\\s+(desc|asc))?","");
 		StringBuilder sb = new  StringBuilder();
 		sb.append("SELECT COUNT(*) FROM (").append(srcSql).append(")");
 		return sb.toString();

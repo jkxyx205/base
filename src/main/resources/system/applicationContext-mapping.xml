@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd   
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context.xsd
+    ">
+
+	<bean id="mappingManagement"
+		class="com.rick.base.dao.boot.MappingManagementBean">
+	 <property name="packagesToScan">
+	  	<list>
+	  		<value>com.rick.base</value>
+	  	</list>
+	 </property>
+	 
+	 <property name="mappingDirectoryLocations">
+	     <list>
+	         <value>classpath:com/rick/base/test/bean/*.xml</value>
+	         <value>classpath:com/rick/base/plugin/quartz/model/ScheduleJob.hbm.xml</value>
+	     </list>
+	</property>
+	</bean>
+</beans>
