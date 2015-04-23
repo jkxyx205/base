@@ -1,6 +1,5 @@
 package com.base.dao;	
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,7 +13,9 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.rick.base.dao.BaseDaoImpl;
+import com.rick.base.dao.TableGenerator;
 import com.rick.base.test.bean.Emp;
+import com.rick.base.test.bean.User;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations = {"classpath:system/applicationContext-util.xml", 
@@ -28,6 +29,9 @@ public class MappingTest extends AbstractJUnit4SpringContextTests {
 	
 	@Resource(name = "baseDao")
 	private BaseDaoImpl dao;
+	
+	@Resource(name = "tableGenerator")
+	private TableGenerator tableGenerator;
 	
 	@Test
 	public void testGet() {
@@ -93,6 +97,11 @@ public class MappingTest extends AbstractJUnit4SpringContextTests {
 		//dao.getHibernateTemplate().update(entity);
 		//dao.getHibernateTemplate().get(entityClass, id)
 		dao.saveOrUpdate(e);
+	}
+	
+	@Test
+	public void create() {
+		tableGenerator.createTable(User.class);
 	}
 	
 	

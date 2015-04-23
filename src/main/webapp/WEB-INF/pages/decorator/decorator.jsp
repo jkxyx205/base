@@ -67,7 +67,7 @@
 <!-- js jqgrid start-->
 <script type="text/javascript" src="resources/plugin/jqueryUI/jquery-ui.min.js"></script>
 	<!-- i18n -->
-<script type="text/javascript" src="resources/plugin/jqGrid/js/i18n/grid.locale-${requestScope.lang }.js"></script>
+<script type="text/javascript" src="resources/plugin/jqGrid/js/i18n/grid.locale-${sessionScope.lang }.js"></script>
 <script type="text/javascript" src="resources/plugin/jqGrid/js/jquery.jqGrid.src.js"></script>
 <!-- js jqgrid end-->
 
@@ -84,11 +84,11 @@
 <script type="text/javascript" src="resources/plugin/bootstrap_select/js/bootstrap-multiselect.js"></script>
 
 <script type="text/javascript" src="resources/plugin/bootstrap_datetimepicker/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
-<script type="text/javascript" src="resources/plugin/bootstrap_datetimepicker/js/locales/bootstrap-datetimepicker.${requestScope.lang }.js" charset="UTF-8"></script>
+<script type="text/javascript" src="resources/plugin/bootstrap_datetimepicker/js/locales/bootstrap-datetimepicker.${sessionScope.lang }.js" charset="UTF-8"></script>
 
 <script type="text/javascript" src="resources/plugin/bootstrap_validate/js/formValidation.js" charset="UTF-8"></script>
 <script type="text/javascript" src="resources/plugin/bootstrap_validate/js/framework/bootstrap.min.js" charset="UTF-8"></script> 
-<script type="text/javascript" src="resources/plugin/bootstrap_validate/js/language/${requestScope.lang }.js" charset="UTF-8"></script> 
+<script type="text/javascript" src="resources/plugin/bootstrap_validate/js/language/${sessionScope.lang }.js" charset="UTF-8"></script> 
 
 <script type="text/javascript" src="resources/js/common/dictionary.js"></script>
 

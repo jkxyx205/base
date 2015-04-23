@@ -28,6 +28,8 @@ public class SQLReader {
 	
     private static final Map<String,QuerySQL> sqlMap = new HashMap<String,QuerySQL>();
     
+    private static final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    
     public static String getSQLbyName(String name) throws Exception {
     	QuerySQL qs = sqlMap.get(name);
     	if(qs == null) {
@@ -46,7 +48,6 @@ public class SQLReader {
 
     @SuppressWarnings("unchecked")
 	public static void getAllSQL(String classpath) throws Exception{
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources;
         try {
             resources = resolver.getResources(classpath);
@@ -63,11 +64,13 @@ public class SQLReader {
         //handle
 
         for(Resource resource : resources) {
+        	logger.info("load mapping xml =>" + resource.getFilename());
         	SAXReader reader = new SAXReader();
             Document document = reader.read(resource.getInputStream());
+            
             Element root = document.getRootElement();
             Iterator<Element> it = root.elementIterator("sql-query");
-            while(it.hasNext()) {
+           while(it.hasNext()) {
             	 Element e = it.next();
             	 QuerySQL qs = new QuerySQL();
                  qs.setName(e.attributeValue("name"));

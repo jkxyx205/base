@@ -1,13 +1,19 @@
 package com.rick.base.test;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.rick.base.test.bean.User;
 import com.rick.base.test.service.TestService;
 import com.rick.base.util.I18nUtil;
 
@@ -50,13 +56,26 @@ public class TestController {
 	}
 	
 	@RequestMapping(value="/register")
-	public String gotoRegister() {
+	public String gotoRegister(Model model) {
+		//Model model request范围的属性
+		
+		model.addAttribute("name", "myname");
+		
+		User user = new User();
+		user.setName("张三");
+		model.addAttribute("user", user);
 		return "test/register";
 	}
 	
 	@RequestMapping(value="/quartz")
 	public String gotoQuartz() {
 		return "quartz/quartz";
+	}
+	
+	@RequestMapping(value="/message")
+	@ResponseBody
+	public String message(@RequestBody List<User> users) {
+		return "{'status':'success'}";
 	}
 	
 	

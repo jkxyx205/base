@@ -1,10 +1,14 @@
 package com.base.mail;
 
+import java.io.File;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 import org.junit.Test;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -38,4 +42,14 @@ public class MailTest {
 		    
 		    System.out.println("邮件发送成功.."); 
 		 } 
+	
+	@Test
+	public void testsax() throws DocumentException {
+		SAXReader reader = new SAXReader();
+		long a = System.currentTimeMillis();
+        Document document = reader.read(new File("f:\\ScheduleJob.hbm.xml"));
+        long b = System.currentTimeMillis();
+        
+        System.out.println(b-a + "......................");
+	}
 }

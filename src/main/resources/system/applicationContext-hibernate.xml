@@ -46,7 +46,7 @@
 	</bean>
 
 	<!-- 配置SessionFactory -->
-<!-- 	<bean id="sessionFactory"
+<!-- 	<bean id="essionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
@@ -77,10 +77,9 @@
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 
-	<bean id="baseDao" class="com.rick.base.dao.BaseDaoImpl">
-	</bean>
+	<bean id="baseDao" class="com.rick.base.dao.BaseDaoImpl"></bean>
 	
-	
+	<bean id="tableGenerator" class="com.rick.base.dao.TableGenerator"></bean>
     
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
         <property name="dataSource" ref="dataSource"/>

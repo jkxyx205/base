@@ -64,6 +64,7 @@ input.error {
 <script type="text/javascript" src="resources/js/common/jquery.validate.js"></script>
 <script type="text/javascript" src="resources/js/common/lang.js"></script>
 <script type="text/javascript">
+
 	$(function() {
 		//get i18n message from js(lang.js)
 		//alert(I18nUtil.getMessageByCode("version.overflow"));
@@ -94,6 +95,9 @@ input.error {
 			 return false; //非常重要，如果是false，则表明是不跳转，在本页上处理，也就是ajax，如果是非false，则传统的form跳转。
 		});
 	});
+	
+
+	
 </script>
 
 </html>

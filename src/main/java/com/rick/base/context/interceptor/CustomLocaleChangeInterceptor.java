@@ -19,7 +19,7 @@ public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor{
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		request.setAttribute("lang", LocaleContextHolder.getLocale());
+		request.getSession().setAttribute("lang", LocaleContextHolder.getLocale());
 		super.afterCompletion(request, response, handler, ex);
 	}
 	

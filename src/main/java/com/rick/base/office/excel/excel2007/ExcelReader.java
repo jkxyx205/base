@@ -26,44 +26,58 @@ public class ExcelReader {
 	
 	private static final transient Logger logger = LoggerFactory.getLogger(ExcelReader.class);  
 
-	public static int sheetNumbers(InputStream is) throws Exception {
+	/*public static int sheetNumbers(InputStream is) throws Exception {
 		XSSFWorkbook wb = new XSSFWorkbook(is);
 		return wb.getNumberOfSheets();
-	}
+	}*/
 	
 	
-	public static int readExcelContent(InputStream is,ExcelResultSet ers,int sheetIndex) throws Exception {
+	/**
+	 * @param is
+	 * @param ers
+	 * @return 总的行数
+	 * @throws Exception
+	 */
+	public static void readExcelContent(InputStream is,ExcelResultSet ers) throws Exception {
 		XSSFWorkbook wb = new XSSFWorkbook(is);
 		XSSFSheet sheet;
 		XSSFRow row;
 		
-        sheet = wb.getSheetAt(sheetIndex);
-        // 得到总行数
-        int rowNum = sheet.getLastRowNum();
-        row = sheet.getRow(0);
-        int colNum = row.getPhysicalNumberOfCells();
-        // 正文
-        for (int i = 0; i <= rowNum; i++) {
-            row = sheet.getRow(i);
-            int j = 0;
-            String[] str = new String[colNum];
-            while (j < colNum) {
-            	str[j] = getCellFormatValue(row.getCell(j)).trim();
-                j++;
-            }
-            if(logger.isDebugEnabled()) {
-            	StringBuilder rowData = new StringBuilder();
-            	for(String s : str) {
-            		rowData.append(s).append(" ");
-            	}
-            	logger.debug(rowData.toString());
-            }
-            
-            if(!ers.rowMapper(i, str)) {
-            	break;
-            }
-        }
-        return rowNum;
+		int sheetIndexs = wb.getNumberOfSheets();
+		
+		for (int sheetIndex = 0; sheetIndex < sheetIndexs; sheetIndex++) {
+			sheet = wb.getSheetAt(sheetIndex);
+	        // 得到总行数
+	        int rowNum = sheet.getLastRowNum();
+	        row = sheet.getRow(0);
+	        String sheetName = sheet.getSheetName();
+	        int colNum = row.getPhysicalNumberOfCells();
+	        // 正文
+	        for (int i = 0; i <= rowNum; i++) {
+	            row = sheet.getRow(i);
+	            if(row == null)
+	            	continue;
+	            
+	            int j = 0;
+	            String[] str = new String[colNum];
+	            while (j < colNum) {
+	            	str[j] = getCellFormatValue(row.getCell(j)).trim();
+	                j++;
+	            }
+	            if(logger.isDebugEnabled()) {
+	            	StringBuilder rowData = new StringBuilder();
+	            	for(String s : str) {
+	            		rowData.append(s).append(" ");
+	            	}
+	            	logger.debug(rowData.toString());
+	            }
+	            
+	            if(!ers.rowMapper(i, str,sheetIndex,sheetName)) {
+	            	break;
+	            }
+	        }
+		 }
+		ers.afterReader();
     }
   
 	/**

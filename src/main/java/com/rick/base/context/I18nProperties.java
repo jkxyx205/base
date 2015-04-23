@@ -2,13 +2,13 @@ package com.rick.base.context;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,7 +44,7 @@ public final class I18nProperties {
 
 	private I18nProperties() {}
 	
-	public void excel2Properties() throws FileNotFoundException, Exception {
+	public void excel2Properties() throws Exception {
 		
 		int langCapacity = 4;
 		
@@ -55,69 +55,74 @@ public final class I18nProperties {
 		final List<List<String>> jsList = new ArrayList<List<String>>();
 		
 		String excelTemplate = Constants.getInstance().I18N_EXCEL_TEMPLATE;
-		int sheetNum = ExcelReader.sheetNumbers(new FileInputStream(excelTemplate));
-		for(int i = 0; i < sheetNum; i++) {
-			ExcelReader.readExcelContent(new FileInputStream(excelTemplate), new ExcelResultSet() {
+	
+		
+		ExcelReader.readExcelContent(new FileInputStream(excelTemplate), new ExcelResultSet() {
+			
+			private int zh = 0;
+			
+			private boolean initFlag = false;
+			
+			public boolean rowMapper(int index, String[] value,int sheetIndex,String sheetName) throws Exception {
+				int len = value.length;
 				
-				private int zh = 0;
-				
-				public boolean rowMapper(int index, String[] value) throws Exception {
-					int len = value.length;
-					
-					if(m.size() == 0) {
-						logger.debug("create i18n properties file..");
-						for(int i = 1 ; i < len; i++) {
-							String langType = value[i];
-							m.put(i, langType);
-							Map<String,String> t = new HashMap<String,String>(len);
-							i18Map.put(langType, t);
-							
-							if("zh".equals(langType)) {
-								m.put(len, "hk");
-								Map<String,String> t1 = new HashMap<String,String>(len);
-								i18Map.put("hk", t1);
-							}
-						}
-					} 
-					
-					if(index == 0) {
-						for(int i = 1 ; i < len; i++) {
-							String langType = value[i];
-							if("zh".equals(langType)) {
-								zh = i;
-								break;
-							}
-						}
-					} else {
-						//check convert
-						if(m.values().contains("zh")) {
-							String[] vv = new String[len+1];
-							System.arraycopy(value, 0, vv, 0, len);
-							vv[len] = SimToTra(value[zh]);
-							value = vv;
-						}
+				if(!initFlag) {
+					logger.debug("create i18n properties file..");
+					for(int i = 1 ; i < len; i++) {
+						String langType = value[i];
+						m.put(i, langType);
+						Map<String,String> t = new LinkedHashMap<String,String>(len);
+						i18Map.put(langType, t);
 						
-						len = value.length;
-						//prepared data
-						String code = value[0];
-						List<String> row = new ArrayList<String>(len);
-						
-						row.add(value[0]);
-						for(int i = 1 ; i < len; i++) {
-							String langType = m.get(i);
-
-							Map<String,String> propertyMap = i18Map.get(langType);
-							propertyMap.put(code, value[i]);
-							
-							row.add(value[i]);
-							
+						if("zh".equals(langType)) {
+							m.put(len, "hk");
+							Map<String,String> t1 = new LinkedHashMap<String,String>(len);
+							i18Map.put("hk", t1);
 						}
-						jsList.add(row);
 					}
-					return true;
+					
+					for(int i = 1 ; i < len; i++) {
+						String langType = value[i];
+						if("zh".equals(langType)) {
+							zh = i;
+							break;
+						}
+					}
+					
+					initFlag = true;
+				} 
+				
+				if (index > 0) {
+					//check convert
+					if(m.values().contains("zh")) {
+						String[] vv = new String[len+1];
+						System.arraycopy(value, 0, vv, 0, len);
+						vv[len] = SimToTra(value[zh]);
+						value = vv;
+					}
+					
+					len = value.length;
+					//prepared data
+					String code = value[0];
+					List<String> row = new ArrayList<String>(len);
+					
+					row.add(value[0]);
+					for(int i = 1 ; i < len; i++) {
+						String langType = m.get(i);
+
+						Map<String,String> propertyMap = i18Map.get(langType);
+						propertyMap.put(code, value[i]);
+						
+						row.add(value[i]);
+						
+					}
+					jsList.add(row);
 				}
-			}, i);
-		}
+				return true;
+			}
+
+			public void afterReader() {}
+		});
 		
 		//data to properties file
 		Set<Entry<String,Map<String,String>>> set = i18Map.entrySet();
@@ -129,6 +134,7 @@ public final class I18nProperties {
 			
 			createProperties(langType,t);	
 		}
+	
 		
 		//data to js file
 		//
@@ -186,6 +192,11 @@ public final class I18nProperties {
 			properties.setProperty(e.getKey(), e.getValue());
 		}
 		properties.store(new FileOutputStream(file),"i18n properties create by I18nExcel2Properties");
+		
+		//创建默认message
+		if("en".equals(langType)) {
+			FileUtils.copyFile(file, new File(i18nFolder,new StringBuilder().append("messages").append(".properties").toString()));
+		}
 	}
 	
     private String SimToTra(String simpStr) {  

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>  
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -93,6 +94,14 @@
             </div>
         </div>
     </div>
+    
+    <hr/>
+    <form:form modelAttribute="user" >
+    	<form:input path="name"/>
+    	${requestScope.user.name }
+    	${requestScope.name }
+    </form:form>
+    
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -193,6 +202,26 @@ $(document).ready(function() {
         }
     });
 });
+
+//ajax
+var arr = [];
+arr.push({"id":12,"name":"rick","addr":"China","birthday":"2015/10/16"});
+arr.push({"id":13,"name":"rick1","addr":"China1","birthday":"2015/10/16"});
+
+$.ajax({
+	url:"message",
+	type:"POST",
+	data:JSON.stringify(arr),
+	dataType:"json", 
+	contentType:"application/json;charset=UTF-8",
+	success:function(data) {
+		
+	}
+	
+});
+
+
+
 </script>
 </body>
 </html>

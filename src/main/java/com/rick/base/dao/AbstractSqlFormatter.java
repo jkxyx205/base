@@ -44,7 +44,7 @@ public abstract class AbstractSqlFormatter {
 	
 	String formatSql(String srcSql,Map<String,Object> param,Map<String, Object> formatMap,String paramInSeperator) {
 		if(formatMap == null || param == null) {
-			return srcSql.replaceAll(FULL_REGEX, "1 = 1");
+			return srcSql.replaceAll(" " + FULL_REGEX, " 1 = 1");
 		} else {
 			List<ParamHolder> paramList = splitParam(srcSql);
 			
@@ -69,7 +69,7 @@ public abstract class AbstractSqlFormatter {
 				}
 				
 				if(StringUtils.isBlank(value)) {
-					srcSql = srcSql.replace(h.full, "1 = 1");
+					srcSql = srcSql.replace(" " + h.full, " 1 = 1");
 					continue;
 				}
 				

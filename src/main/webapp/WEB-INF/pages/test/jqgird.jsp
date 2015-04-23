@@ -115,7 +115,7 @@ $(function() {
 		 //alert((I18nUtil.lang));
 		 
 	    //ajaxGetData();
-	    ajaxUpdateData();
+	    //ajaxUpdateData();
   }); 
   
   

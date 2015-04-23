@@ -17,10 +17,10 @@ public class Emp {
 	
 	private String ename;
 	
-	@Column(name="SAL")
+	@Column(name="SAL",columnDefinition="VARCHAR2(10 CHAR)")
 	private float sal;
 	
-	@Column(name="HIREDATE")
+	@Column(name="HIREDATE",nullable=false,columnDefinition="DATE")
 	private Date hdate;
 
 	public Date getHdate() {

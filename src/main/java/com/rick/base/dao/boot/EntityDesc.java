@@ -81,6 +81,70 @@ public class EntityDesc {
 		 * 属性类型
 		 */
 		private Class<?> clazzProType;
+		
+		
+		//
+		private String columnDefinition = "";
+		
+		private int length = 255;
+		
+		private boolean unique = false;
+		
+		
+		private boolean nullable = true;
+		
+		private int precision;
+		
+		private int scale;
+		
+		
+		public int getPrecision() {
+			return precision;
+		}
+
+		public void setPrecision(int precision) {
+			this.precision = precision;
+		}
+
+		public int getScale() {
+			return scale;
+		}
+
+		public void setScale(int scale) {
+			this.scale = scale;
+		}
+
+		public String getColumnDefinition() {
+			return columnDefinition;
+		}
+
+		public void setColumnDefinition(String columnDefinition) {
+			this.columnDefinition = columnDefinition;
+		}
+
+		public int getLength() {
+			return length;
+		}
+
+		public void setLength(int length) {
+			this.length = length;
+		}
+
+		public boolean isUnique() {
+			return unique;
+		}
+
+		public void setUnique(boolean unique) {
+			this.unique = unique;
+		}
+
+		public boolean isNullable() {
+			return nullable;
+		}
+
+		public void setNullable(boolean nullable) {
+			this.nullable = nullable;
+		}
 
 		public String getDbColumnName() {
 			return dbColumnName;

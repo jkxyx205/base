@@ -97,18 +97,27 @@ public class EntityReader {
 						ed.setPrimaryKey(field.getName());
 					}
 					
-					
-					String dbColumnName = "";
-					if(ann.annotationType() == javax.persistence.Column.class) {
-						dbColumnName = ((javax.persistence.Column) ann).name();
-						
-					}
-					
 					//column
 					Column c = new Column();
+					
+					if(ann.annotationType() == javax.persistence.Column.class) {
+						javax.persistence.Column cn = (javax.persistence.Column)ann;
+						c.setColumnDefinition(cn.columnDefinition());
+						c.setLength(cn.length());
+						c.setNullable(cn.nullable());
+						c.setUnique(cn.unique());
+						c.setDbColumnName(cn.name());
+						c.setScale(cn.scale());
+						c.setPrecision(cn.precision());
+					}
+				
 					c.setClazzProName(field.getName());
 					c.setClazzProType(field.getType());
-					c.setDbColumnName(StringUtils.isBlank(dbColumnName) ? field.getName() : dbColumnName);
+					c.setDbColumnName(StringUtils.isBlank(c.getDbColumnName()) ? field.getName() : c.getDbColumnName());
+					
+					
+					//
+					 
 					ed.getColumn().add(c);
 				}
 			} else {

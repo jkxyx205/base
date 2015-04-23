@@ -19,37 +19,51 @@
 	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>   
 	</context:component-scan>
 	 
-    <mvc:annotation-driven>
-	 <mvc:message-converters register-defaults="true">  
-		 <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
-                <constructor-arg value="UTF-8" />  
-            </bean>  
-            <!-- 将Jackson2HttpMessageConverter的默认格式化输出为true -->  
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
-                <property name="objectMapper">    
-                     <bean class="com.rick.base.context.ObjectMappingCustomer">
-                     	<property name="dateFormat">
-                     		<bean class="java.text.SimpleDateFormat">
-                     			<constructor-arg type="java.lang.String" value="yyyy/MM/dd"/>
-                     		</bean>
-                     	</property>
-                     </bean>
-                </property>
-                   
-            </bean>  
-            <!-- 使用XML格式输出数据 -->  
-<!--             <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">   -->
-<!--                 <constructor-arg>   -->
-<!--                     <bean class="org.springframework.oxm.xstream.XStreamMarshaller">   -->
-<!--                         <property name="streamDriver">   -->
-<!--                             <bean class="com.thoughtworks.xstream.io.xml.StaxDriver"/>   -->
-<!--                         </property>   -->
-                          
-<!--                     </bean>   -->
-<!--                 </constructor-arg>   -->
-<!--                 <property name="supportedMediaTypes" value="application/xml"></property>   -->
-<!--             </bean>   -->
-		 </mvc:message-converters>
+   <mvc:annotation-driven>  
+		<mvc:message-converters register-defaults="true">  
+			 <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
+	                <constructor-arg value="UTF-8" />  
+	           </bean>  
+	            <!-- 将Jackson2HttpMessageConverter的默认格式化输出为true -->  
+	           <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
+	                <property name="objectMapper">    
+	                     <bean class="com.rick.base.context.ObjectMappingCustomer">
+	                     	<property name="dateFormat">
+	                     		<bean class="java.text.SimpleDateFormat">
+	                     			<constructor-arg type="java.lang.String" value="yyyy/MM/dd"/>
+	                     		</bean>
+	                     	</property>
+	                     </bean>
+	                </property> 
+	                <property name="supportedMediaTypes">
+	                 <list>  
+	                		<value>text/plain;charset=UTF-8</value>  
+	                		<value>application/json;charset=UTF-8</value>
+	            	</list>  
+	                </property>
+	            </bean>  
+	           <bean id="stringHttpMessageConverter"  
+			        class="org.springframework.http.converter.StringHttpMessageConverter">  
+			        <constructor-arg value="UTF-8" index="0"></constructor-arg><!--  
+			            避免出现乱码 -->  
+			        <property name="supportedMediaTypes">  
+			            <list>  
+			                <value>text/plain;charset=UTF-8</value>  
+			            </list>  
+			        </property>  
+			    </bean>  
+				 <!-- <bean id="marshallingHttpMessageConverter"  
+				        class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">  
+				        <property name="marshaller" ref="castorMarshaller" />  
+				        <property name="unmarshaller" ref="castorMarshaller" />  
+				        <property name="supportedMediaTypes">  
+				            <list>  
+				                <value>text/xml;charset=UTF-8</value>  
+				                <value>application/xml;charset=UTF-8</value>  
+				            </list>  
+				        </property>  
+				    </bean>  -->
+			 </mvc:message-converters>
 	</mvc:annotation-driven>
 	
 
