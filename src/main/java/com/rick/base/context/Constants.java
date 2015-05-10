@@ -5,6 +5,8 @@ import java.io.File;
 import com.rick.base.office.excel.Builder;
 
 public final class Constants {
+	public static final String ENCODING = "UTF-8";
+	
 	public static Constants getInstance() {
 		return instance;
 	}

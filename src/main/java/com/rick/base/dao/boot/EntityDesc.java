@@ -14,6 +14,12 @@ public class EntityDesc {
 	private String primaryKey;
 	
 	/**
+	 * 主键字段类型
+	 */
+	private Class<?> clazzPrimaryKey;
+	
+
+	/**
 	 * 主键策略
 	 */
 	private GenerationType type;
@@ -58,6 +64,15 @@ public class EntityDesc {
 
 	public void setType(GenerationType type) {
 		this.type = type;
+	}
+	
+	public  Class<?> getClazzPrimaryKey() {
+		return clazzPrimaryKey;
+	}
+
+
+	public void setClazzPrimaryKey( Class<?> clazzPrimaryKey) {
+		this.clazzPrimaryKey = clazzPrimaryKey;
 	}
 
 	public static class Column {

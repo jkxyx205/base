@@ -2,8 +2,10 @@ package com.rick.base.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.SessionFactoryUtils;
 
@@ -312,43 +316,52 @@ public class BaseDaoImpl {
 		int len = paramLen = ed.getColumn().size();
  
 		Serializable id = null;
+		Object[] args = null;
+		
 		boolean insertId = true;
-		
-		Object[] args = new Object[paramLen];
-		
+		boolean sequence = false;
 		
 		StringBuilder sb = new StringBuilder("INSERT INTO ");
 		sb.append(ed.getTableName());
 		sb.append("(");
 	
+		
 		try {
 			if(GenerationType.IDENTITY == ed.getType()) {
-				//select LAST_INSERT_ID() mysql 获取id
 				paramLen = len - 1;
 				insertId = false;
 			} else if (GenerationType.SEQUENCE == ed.getType()){
-				String seqSql = "SELECT "+ed.getTableName()+"_"+ed.getPrimaryKey()+".NEXTVAL FROM DUAL";
-				id = jdbcTemplate.queryForObject(seqSql, Integer.class);
-				PropertyUtils.setProperty(entity, ed.getPrimaryKey(), id);
+				paramLen = len - 1;
+				sequence = true;
 			} else if (GenerationType.TABLE == ed.getType()){
 				//id =
 			}  else if (GenerationType.AUTO == ed.getType()){
 				id = (Serializable) PropertyUtils.getProperty(entity, ed.getPrimaryKey());
-				if (null == id) {// 没有指定主键  采用UUID,这个时候 id字段类型要采用String
-					//TODO
-					//PropertyUtils.setProperty(entity, ed.getPrimaryKey(), 990);
+				if (null == id) {
 					logger.error("primary key can't be null");
 					throw new RuntimeException("primary key can't be null");
 				}
 			}  
 			
+			args = new Object[paramLen];
+			
+			if(sequence)
+				sb.append(ed.getPrimaryKey()).append(",");
+			
 			int index = 0;
 			for (EntityDesc.Column c: ed.getColumn()) {
-				if(!insertId && c.getDbColumnName().equals(ed.getPrimaryKey())) 
+				if((!insertId||sequence) && c.getDbColumnName().equals(ed.getPrimaryKey())) // IDENTITY/SEQUENCE ID 不显示插入id
 					continue;
 				
 				sb.append(c.getDbColumnName()).append(",");
-				args[index++] = PropertyUtils.getProperty(entity, c.getClazzProName());
+				
+				Object value = PropertyUtils.getProperty(entity, c.getClazzProName());
+				
+				if(value !=null && c.getClazzProType() == Date.class) {
+					value = new java.sql.Date(((Date)value).getTime());
+				}
+				
+				args[index++] = value; 
 				
 			}
 		} catch (Exception e) {
@@ -360,6 +373,9 @@ public class BaseDaoImpl {
 		sb.deleteCharAt(sb.length() - 1);
 		sb.append(") VALUES(");
 		
+		if(sequence)
+			sb.append(ed.getTableName() + "_" + ed.getPrimaryKey() + ".nextval,");
+		
 		
 		for(int i = 0; i < paramLen; i++) {
 			sb.append("?,");
@@ -367,11 +383,54 @@ public class BaseDaoImpl {
 		sb.deleteCharAt(sb.length() - 1);
 		sb.append(")");
 		
-		
 		logger.debug(sb.toString());
-		jdbcTemplate.update(sb.toString(), args);
-		return id;
+		
+		if(!insertId||sequence) {
+			final String sql = sb.toString();
+			final Object[] param = args;
+			
+			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+			jdbcTemplate.update(new PreparedStatementCreator() {
+
+				public PreparedStatement createPreparedStatement(Connection con)
+						throws SQLException {
+					PreparedStatement psst = con.prepareStatement(sql,  new String[] { ed.getPrimaryKey() });
+					int paramLen = param.length;
+					
+					for(int i = 0 ; i < paramLen ;i++) {
+						psst.setObject(i+1, param[i]);
+					}
+					
+					return psst;
+				}
+				
+			}, keyHolder);
+			
+			
+			try {
+				//设置主键到bean中
+				PropertyUtils.setProperty(entity, ed.getPrimaryKey(), getPrimaryValue(keyHolder.getKey(),ed.getClazzPrimaryKey()));
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error(e.getMessage());
+				throw new RuntimeException(e);
+			}
+			return id;
+		} else {
+			jdbcTemplate.update(sb.toString(), args); 
+			return id;
+		}
+		
 	}
+	
+	private Object getPrimaryValue(Number number, Class<?> clazz) {
+		if (clazz == Integer.class)
+			return number.intValue();
+		else if (clazz == Long.class) {
+			return number.longValue();
+		}
+		return number;
+	} 
 	
 	public void saveOrUpdate(Object entity) {
 		Class<?> clazz = entity.getClass();

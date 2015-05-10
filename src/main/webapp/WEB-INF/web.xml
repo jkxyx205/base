@@ -10,9 +10,9 @@
 		<param-value>classpath:system/applicationContext*.xml,classpath:business/applicationContext*.xml</param-value>
 	</context-param>
 
-	<listener>
+<!-- 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+	</listener> -->
 	
 	<listener>
 		<listener-class>com.rick.base.context.SpringInit</listener-class>

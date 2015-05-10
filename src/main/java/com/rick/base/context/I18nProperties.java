@@ -169,7 +169,7 @@ public final class I18nProperties {
 		
 		sb.append("return properties[key][idx];};return properties;}();");
 		String jsFile = Constants.getInstance().I18N_JS_FILE;
-		FileUtils.writeStringToFile(new File(jsFile), sb.toString());
+		FileUtils.writeStringToFile(new File(jsFile), sb.toString(),Constants.ENCODING);
 		
 	}
 	

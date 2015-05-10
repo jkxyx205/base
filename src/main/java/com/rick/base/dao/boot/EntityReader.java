@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -70,7 +71,9 @@ public class EntityReader {
 	static void analysis(Class<?> clazz) throws NoSuchFieldException, SecurityException {
 		Entity entity = clazz.getAnnotation(Entity.class);
 		
-		String tableName = entity.name();
+		Table table = clazz.getAnnotation(Table.class);
+		
+		String tableName = (table == null ? entity.name() : table.name());
 		
 		EntityDesc ed = new EntityDesc();
 		
@@ -95,6 +98,7 @@ public class EntityReader {
 					
 					if(ann.annotationType() == Id.class) {
 						ed.setPrimaryKey(field.getName());
+						ed.setClazzPrimaryKey(field.getType());
 					}
 					
 					//column

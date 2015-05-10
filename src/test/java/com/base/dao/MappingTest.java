@@ -1,5 +1,6 @@
 package com.base.dao;	
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.rick.base.dao.BaseDaoImpl;
 import com.rick.base.dao.TableGenerator;
 import com.rick.base.test.bean.Emp;
+import com.rick.base.test.bean.Permission;
 import com.rick.base.test.bean.User;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
@@ -61,14 +63,14 @@ public class MappingTest extends AbstractJUnit4SpringContextTests {
 		e.setEmpno(1234);
 		dao.save(e);*/
 		
-		/*Emp e = new Emp();
+		Emp e = new Emp();
 		e.setEname("Ashley");
 		e.setHdate(new Date());
 		e.setSal(3699.2f);
-		dao.save(e);*/
+		dao.save(e);
 		
-		System.out.println(ctx);
-		System.out.println(ctx.getEnvironment().getProperty("jdbc.url"));
+/*		System.out.println(ctx);
+		System.out.println(ctx.getEnvironment().getProperty("jdbc.url"));*/
 		 
 		
 	}
@@ -102,6 +104,17 @@ public class MappingTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void create() {
 		tableGenerator.createTable(User.class);
+	}
+	
+	@Test
+	public void testJdbcTemplate() {
+	   Permission per = new Permission();
+	   per.setDescription("rick");
+	   per.setPermission("five11");
+	   per.setAvailable(true);
+	   dao.save(per);
+	   
+	   System.out.println("................" + per.getId());
 	}
 	
 	
